@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cguf707aixls8"
+
+[deps]
+
+source_file="res://src/Prototypes/_Template/i18n/_template.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/Prototypes/BattleArray/AI/battle_brain.gd" id="1_brain"]
+[ext_resource type="Script" path="res://src/GugaFramework/beehave/nodes/beehave_tree.gd" id="2_tree"]
+[ext_resource type="Script" path="res://src/GugaFramework/beehave/nodes/composites/selector_reactive.gd" id="3_selector"]
+[ext_resource type="Script" path="res://src/Prototypes/BattleArray/AI/BattleStrikeTask.cs" id="4_strike"]
+[ext_resource type="Script" path="res://src/Prototypes/BattleArray/AI/BattleCloseInTask.cs" id="5_close"]
+[ext_resource type="Script" path="res://src/Prototypes/BattleArray/AI/BattleHoldTask.cs" id="6_hold"]
+
+[node name="Brain" type="Node"]
+script = ExtResource("1_brain")
+
+[node name="BT" type="Node" parent="."]
+script = ExtResource("2_tree")
+
+[node name="Selector" type="Node" parent="BT"]
+script = ExtResource("3_selector")
+
+[node name="Strike" type="Node" parent="BT/Selector"]
+script = ExtResource("4_strike")
+
+[node name="CloseIn" type="Node" parent="BT/Selector"]
+script = ExtResource("5_close")
+
+[node name="Hold" type="Node" parent="BT/Selector"]
+script = ExtResource("6_hold")

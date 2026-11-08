@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# 源码 — 4 空格缩进（与 AGENTS.md 代码风格一致，禁止 Tab）
+[*.cs]
+indent_style = space
+indent_size = 4
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# MSBuild 项目文件 — 2 空格缩进
+[*.{csproj,props,targets}]
+indent_style = space
+indent_size = 2
+
+# Godot 引擎生成的文件 — 编辑器默认写入 Tab 缩进，保持一致避免无谓变更
+[*.{tscn,tres,gd,gdshader}]
+indent_style = tab
+indent_size = 4
+
+# 文档与配置 — 2 空格缩进
+[*.{md,json,yml,yaml}]
+indent_style = space
+indent_size = 2

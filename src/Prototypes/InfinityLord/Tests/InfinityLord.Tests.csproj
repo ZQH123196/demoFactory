@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <!-- xUnit v3 的测试工程是独立可执行程序集（v2 是库，运行器另起进程加载）。不设这行会报找不到入口点。 -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+<PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <!-- 断言库（配在 xUnit 上面，不替代它）：xUnit 内置 Assert 只有 True/False 带消息参数，
+         Equal / Contains / Null / InRange 这些都没有（实测 v3.2.2）。本项目的断言普遍带一句
+         中文判红理由，是判红时给 agent 指路的那条信息，丢不得（AGENTS.md 0.1 可调试性第一），
+         所以配 Shouldly：x.ShouldBe(y, "说明") 顶回 NUnit 的 Assert.That(x, Is.EqualTo(y), "说明")。
+         许可 Apache-2.0 免费商用 —— FluentAssertions 8 起转商业授权（~US$129.95/人/年），本项目不用。
+         坑：集合与字符串的 ShouldBe/ShouldContain 带说明时是四参（第三位 Case.Sensitive），标量才是三参。 -->
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <!--
+    源码链接编译（不引用主 csproj）：
+    主项目是 Godot.NET.Sdk，把 GodotSharp/引擎引用拖进测试进程；
+    而 LogicWorld + GugaFramework 是纯 C#（引擎无关），直接链接源码即可确定性测试。
+    边界（复盘提案 3 的选型依据）：
+    - 链接 src/GugaFramework/**.cs — 中台层全部纯 C#（GameClock/EventBus/GameLogicBase）
+    - 排除 src/GugaFramework/Camera/**.cs — 相机架是表现层组件（Node3D + InputMap），
+      链进来直接编译失败；这条排除就是"逻辑层零感知视角"的机器可执行边界
+    - 排除 src/GugaFramework/Animation/**.cs — 同理，动画驱动器吃 AnimationPlayer
+    - 排除 src/GugaFramework/DebugBridge/ 那几件表现层组件（宿主 TcpListener、Roslyn 求值器、
+      Attach 接线、视口截图）——链进测试进程直接编译失败；这条排除就是"逻辑层零感知调试通道"
+      的机器可执行边界（计划 Phase 1 红线）。按文件点名而不是通配：同目录的
+      BridgeArgs.cs 是纯 C# 取参口径，它链得进来、也就能被断言
+    - **这份点名排除在五个 csproj 里各存一份**（本文件 + 另三个测试项目 + src/Tools），
+      而通配是 GugaFramework\**\*.cs —— 在 GugaFramework/ 下新增一个吃 Godot 类型的文件时，
+      五处都得补，漏一处就报 CS0246「找不到命名空间 Godot」。症状离病根很远：
+      主工程 dotnet build 照过、只有测试或工具线红。2026-09-30 收编 ViewportCapture 时踩过。
+    - 排除 src/GugaFramework/beehave/**.cs — 包内的 C# 件（BeehaveTask 等）吃 Godot.Node，
+      链进测试进程直接编译失败；任务的**决策**另放纯 C# 类，见下面 AI 那条
+    - 链接 Logic/*.cs — 无限领主纯数据逻辑层（规则 1.6：尽可能少依赖 Godot 类型）
+    - 链接 AI/HeroBrainPolicy.cs — 行为树三条支路的决策与行为流文本，纯 C#；
+      AI 目录其余文件是 Godot 节点（搬运层），不链
+    - 表现层（Main.cs 等依赖 Godot）不链进本项目（依据：排除面见上面几条）
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\GugaFramework\**\*.cs"
+             Exclude="..\..\..\GugaFramework\Camera\**\*.cs;..\..\..\GugaFramework\Animation\**\*.cs;..\..\..\GugaFramework\I18n\**\*.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeHost.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeEval.cs;..\..\..\GugaFramework\DebugBridge\DebugConsole.cs;..\..\..\GugaFramework\DebugBridge\ViewportCapture.cs;..\..\..\GugaFramework\DebugBridge\InputInjector.cs;..\..\..\GugaFramework\beehave\**\*.cs;..\..\..\GugaFramework\Guard\LogRateWatchdog.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageScene.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageOpenFieldScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageUnitView.cs;..\..\..\GugaFramework\FrontEnd\FrontEndLayer.cs;..\..\..\GugaFramework\FrontEnd\FrontEndVerbs.cs;..\..\..\GugaFramework\FrontEnd\Stage\FrontEndStageScene.cs;..\..\..\GugaFramework\Vfx\VfxPlayer.cs;..\..\..\GugaFramework\Vfx\SkillStageVfxCues.cs;..\..\..\GugaFramework\Tests\**\*.cs"
+             LinkBase="GugaFramework" />
+    <Compile Include="..\Scripts\Logic\*.cs" LinkBase="Logic" />
+    <Compile Include="..\AI\HeroBrainPolicy.cs" LinkBase="AI" />
+      <!-- 表现层那三件里的第三件（SkillCues）：纯 C#、零 Godot 依赖，所以链得进来 ——
+         「每一次出手演一遍、演的是出手方」这一层分派要能离线断言（动画那半仍在主工程）。 -->
+      <Compile Include="..\Scripts\SkillCues.cs" LinkBase="Scripts" />
+      <!-- 公共层的两个测试 helper（在 GugaFramework/Tests/，被上面那条通配排除了，所以单点链进来）：
+         TestPaths = 仓库根定位（顶掉 NUnit 的 TestContext.CurrentContext.TestDirectory，xUnit v3 的 TestContext 没这个成员）
+         TestLog  = 运行期输出（顶掉 TestContext.Out/Progress.WriteLine）
+         两份都在公共层只此一份（规则 9.12），各原型只调不重写。 -->
+    <Compile Include="..\..\..\GugaFramework\Tests\TestPaths.cs" LinkBase="GugaFrameworkTests" />
+    <Compile Include="..\..\..\GugaFramework\Tests\TestLog.cs" LinkBase="GugaFrameworkTests" /></ItemGroup>
+
+</Project>

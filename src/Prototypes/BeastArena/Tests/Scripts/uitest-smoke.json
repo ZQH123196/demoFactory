@@ -1,0 +1,8 @@
+[
+  { "label": "根视口是 1920×1080", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "开局：按文字点「开始游戏」", "click": "开始游戏" },
+  { "label": "推进 10 个逻辑步", "wait": 10 },
+  { "label": "写路径走注入（改负债策略，走的是原型那一条 inject）", "inject": "SetDebtPolicy|None|-" },
+  { "label": "数字比较形态：步号过了门槛，且快照里有巨兽段", "assert": "tick>=1 && BEAST beast" },
+  { "label": "视口没被后面的操作改掉", "assertUi": "viewport=(1920, 1080)" }
+]

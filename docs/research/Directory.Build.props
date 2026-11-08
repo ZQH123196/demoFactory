@@ -1,0 +1,8 @@
+<Project>
+  <!-- docs/research/ 下放的是研究性探针，不是游戏代码：
+       编译产物一律丢进项目根的 .cache/，避免在工作树里留下 obj/bin。 -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../../.cache/research/$(MSBuildProjectName)/obj/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)../../.cache/research/$(MSBuildProjectName)/bin/</BaseOutputPath>
+  </PropertyGroup>
+</Project>

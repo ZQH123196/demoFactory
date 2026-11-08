@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cnxe6pbiiovo8"]
+
+[ext_resource type="Script" uid="uid://cim77n8v67f3k" path="res://src/Prototypes/_Template/Scripts/Main.cs" id="1"]
+
+[node name="Main" type="Node" unique_id=1721254790]
+script = ExtResource("1")
+
+[node name="World" type="Node3D" parent="." unique_id=1578788927]
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1917094122]

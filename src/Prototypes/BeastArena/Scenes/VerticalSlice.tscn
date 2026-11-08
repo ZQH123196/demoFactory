@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://coe043q2nrdrl" path="res://src/Prototypes/BeastArena/Scripts/Main.cs" id="1"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1")
+Profile = 1
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]

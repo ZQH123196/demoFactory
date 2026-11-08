@@ -1,0 +1,60 @@
+<!--
+  巨兽竞技场 切片 1 测试项目。
+  结构与边界的理由见本目录 README.md 与 src/Prototypes/_Template/Tests/README.md。
+  运行：dotnet test src/Prototypes/BeastArena/Tests
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <!-- xUnit v3 的测试工程是独立可执行程序集（v2 是库，运行器另起进程加载）。不设这行会报找不到入口点。 -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+<PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <!-- 断言库（配在 xUnit 上面，不替代它）：xUnit 内置 Assert 只有 True/False 带消息参数，
+         Equal / Contains / Null / InRange 这些都没有（实测 v3.2.2）。本项目的断言普遍带一句
+         中文判红理由，是判红时给 agent 指路的那条信息，丢不得（AGENTS.md 0.1 可调试性第一），
+         所以配 Shouldly：x.ShouldBe(y, "说明") 顶回 NUnit 的 Assert.That(x, Is.EqualTo(y), "说明")。
+         许可 Apache-2.0 免费商用 —— FluentAssertions 8 起转商业授权（~US$129.95/人/年），本项目不用。
+         坑：集合与字符串的 ShouldBe/ShouldContain 带说明时是四参（第三位 Case.Sensitive），标量才是三参。 -->
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <!--
+    源码链接编译（不引用主 csproj）：主项目是 Godot.NET.Sdk，会把 GodotSharp/引擎引用拖进
+    测试进程；而 Logic + GugaFramework 是纯 C#（引擎无关），直接链接源码即可确定性测试。
+    下面那条排除就是「逻辑层零感知视角」的机器可执行边界，动它之前先读 README.md：
+    - Camera / Animation：相机架与动画驱动器是表现层组件（吃 Node3D / AnimationPlayer）
+    - DebugBridge 按文件点名那三件：TcpListener 端、Roslyn 求值器、Attach 接线。
+      同目录的 BridgeArgs.cs 是纯 C# 取参口径，链得进来、也就断得了
+    - beehave：包内的 C# 件吃 Godot.Node
+    - Guard/LogRateWatchdog.cs：吃引擎日志接口
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\GugaFramework\**\*.cs"
+             Exclude="..\..\..\GugaFramework\Camera\**\*.cs;..\..\..\GugaFramework\Animation\**\*.cs;..\..\..\GugaFramework\I18n\**\*.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeHost.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeEval.cs;..\..\..\GugaFramework\DebugBridge\DebugConsole.cs;..\..\..\GugaFramework\DebugBridge\ViewportCapture.cs;..\..\..\GugaFramework\DebugBridge\InputInjector.cs;..\..\..\GugaFramework\beehave\**\*.cs;..\..\..\GugaFramework\Guard\LogRateWatchdog.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageScene.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageOpenFieldScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageUnitView.cs;..\..\..\GugaFramework\FrontEnd\FrontEndLayer.cs;..\..\..\GugaFramework\FrontEnd\FrontEndVerbs.cs;..\..\..\GugaFramework\FrontEnd\Stage\FrontEndStageScene.cs;..\..\..\GugaFramework\Vfx\VfxPlayer.cs;..\..\..\GugaFramework\Vfx\SkillStageVfxCues.cs;..\..\..\GugaFramework\Tests\**\*.cs"
+             LinkBase="GugaFramework" />
+    <!-- 原型纯数据逻辑层（约定就在 Scripts/Logic/ 一层；「逻辑层纯 C#」要求逻辑层尽可能少依赖 Godot 类型） -->
+    <Compile Include="..\Scripts\Logic\*.cs" LinkBase="Logic" />
+    <!-- 音频混音策略件（Scripts/Audio/，纯 C# 零 Godot 类型，与 Logic 同口径按目录显式链一行）：
+         80 毫秒合并与档位抢占是真值下游的纯函数，离线可断言（「测试与实测分工」）。 -->
+    <Compile Include="..\Scripts\Audio\*.cs" LinkBase="ScriptsAudio" />
+    <!-- 九类事件的对照表（Scripts/Show/ShowCues.cs，纯 C#）：同一目录另外两件吃 Godot 类型，
+         不整目录链，只点名这一件。 -->
+    <Compile Include="..\Scripts\Show\ShowCues.cs" LinkBase="ScriptsShow" />
+    <!-- 本目录内的测试文件不用写 Include：SDK 默认通配已收（写了会撞重复项） -->
+      <!-- 公共层的两个测试 helper（在 GugaFramework/Tests/，被上面那条通配排除了，所以单点链进来）：
+         TestPaths = 仓库根定位（顶掉 NUnit 的 TestContext.CurrentContext.TestDirectory，xUnit v3 的 TestContext 没这个成员）
+         TestLog  = 运行期输出（顶掉 TestContext.Out/Progress.WriteLine）
+         两份都在公共层只此一份（规则 9.12），各原型只调不重写。 -->
+    <Compile Include="..\..\..\GugaFramework\Tests\TestPaths.cs" LinkBase="GugaFrameworkTests" />
+    <Compile Include="..\..\..\GugaFramework\Tests\TestLog.cs" LinkBase="GugaFrameworkTests" /></ItemGroup>
+
+</Project>

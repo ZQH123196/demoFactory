@@ -1,0 +1,74 @@
+[
+  {
+    "label": "根视口是 1920×1080（无头默认 64×64，不设的话控件坐标全错）",
+    "assertUi": "viewport=(1920, 1080)"
+  },
+  {
+    "label": "开局：标题屏那颗没有名字，按唯一可见文字点「开始游戏」",
+    "click": "开始游戏"
+  },
+  {
+    "label": "推进 10 个逻辑步（不等墙钟）",
+    "wait": 10
+  },
+  {
+    "label": "命令栏「停靠」：开出目的地弹层",
+    "click": "Dock"
+  },
+  {
+    "label": "选「贫城」——这一按就是 Dock 动词",
+    "click": "Destination0"
+  },
+  {
+    "label": "等它从野地开到贫城并靠上（40 米 = 1000 步，留余量）",
+    "wait": 1200
+  },
+  {
+    "label": "真的停住了",
+    "assert": "phase=poor_city"
+  },
+  {
+    "label": "召回的前置条件：把饱食度压到 10，开去沙城路上会自己脱队觅食（eval 只摆条件，被验的召回仍走界面按钮）",
+    "eval": "Main.World!.Ecology.SetSatiation(10.0); return \"sat=\" + Main.World.Ecology.Satiation;"
+  },
+  {
+    "label": "命令栏「停靠」→「沙城」：回自动航线",
+    "click": "Dock"
+  },
+  {
+    "label": "选「沙城」",
+    "click": "Destination3"
+  },
+  {
+    "label": "等巨兽自己脱队去觅食（饿着 + 30 米内有可吞对象）",
+    "eval": "var w = Main.World!; for (int i = 0; i < 4000; i++) { if (w.Voyage.Phase == DemoFactory.Prototypes.BeastArena.Logic.VoyagePhase.DetouringToFood || w.Voyage.Phase == DemoFactory.Prototypes.BeastArena.Logic.VoyagePhase.Eating) break; Main.AdvanceToDebug(w.Tick + 1); } return \"tick=\" + w.Tick + \" phase=\" + w.Voyage.Phase;"
+  },
+  {
+    "label": "等面板刷新",
+    "sleep": 0.25
+  },
+  {
+    "label": "命令栏「吞食」：开吞食面板",
+    "click": "EatTarget"
+  },
+  {
+    "label": "等面板刷新（召回那一颗按当前航程置灰）",
+    "sleep": 0.25
+  },
+  {
+    "label": "吞食面板「召回觅食」：这一按就是 RecallForage 动词",
+    "click": "Recall"
+  },
+  {
+    "label": "推进 2 个逻辑步",
+    "wait": 2
+  },
+  {
+    "label": "召回把巨兽从觅食拉回返航",
+    "assert": "MAP phase=返航"
+  },
+  {
+    "label": "收干净",
+    "eval": "return Main.ClosePanels();"
+  }
+]

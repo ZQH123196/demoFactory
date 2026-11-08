@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://csp7ko6wussh6"]
+
+[ext_resource type="Script" uid="uid://bx4mfx5tdi6vr" path="res://src/GugaFramework/Abilities/Stage/SkillStageScene.cs" id="1_stage"]
+
+[node name="SkillStage" type="Node3D" unique_id=375229038]
+script = ExtResource("1_stage")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=81568160]

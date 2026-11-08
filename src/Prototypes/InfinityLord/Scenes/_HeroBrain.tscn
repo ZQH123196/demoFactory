@@ -1,0 +1,34 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/hero_brain.gd" id="1_brain"]
+[ext_resource type="Script" path="res://src/GugaFramework/beehave/nodes/beehave_tree.gd" id="2_tree"]
+[ext_resource type="Script" path="res://src/GugaFramework/beehave/nodes/composites/selector_reactive.gd" id="3_selector"]
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/BrainFleeTask.cs" id="4_flee"]
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/BrainAttackTask.cs" id="5_attack"]
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/BrainChaseTask.cs" id="6_chase"]
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/BrainHurtWanderTask.cs" id="7_hurt"]
+[ext_resource type="Script" path="res://src/Prototypes/InfinityLord/AI/BrainIdleWanderTask.cs" id="8_idle"]
+
+[node name="Brain" type="Node"]
+script = ExtResource("1_brain")
+
+[node name="BT" type="Node" parent="."]
+script = ExtResource("2_tree")
+
+[node name="Selector" type="Node" parent="BT"]
+script = ExtResource("3_selector")
+
+[node name="Flee" type="Node" parent="BT/Selector"]
+script = ExtResource("4_flee")
+
+[node name="HurtWander" type="Node" parent="BT/Selector"]
+script = ExtResource("7_hurt")
+
+[node name="Attack" type="Node" parent="BT/Selector"]
+script = ExtResource("5_attack")
+
+[node name="Chase" type="Node" parent="BT/Selector"]
+script = ExtResource("6_chase")
+
+[node name="IdleWander" type="Node" parent="BT/Selector"]
+script = ExtResource("8_idle")

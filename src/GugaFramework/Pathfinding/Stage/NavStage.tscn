@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cn8vq4xkt3yrd"]
+
+[ext_resource type="Script" uid="uid://bt2i1e7fm11fm" path="res://src/GugaFramework/Pathfinding/Stage/NavStageScene.cs" id="1_stage"]
+
+[node name="NavStage" type="Node3D" unique_id=375229040]
+script = ExtResource("1_stage")
+Speed = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=81568162]

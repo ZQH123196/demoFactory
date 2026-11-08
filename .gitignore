@@ -1,0 +1,80 @@
+
+*/**/*.glb
+*/**/*.wav
+
+
+# Godot 4+ specific ignores
+.godot/
+/android/
+.opencode/
+.agents/
+# spec 工作的临时目录：ticket 与草稿，结论并进 docs/ 后即删，不进版本库。
+.scratch/
+# 本机临时产物根：真机验收的截图、Journal、桥客户端脚本等一切中间物，不进版本库。
+# 用户裁决（2026-10-19）：截图与取证件只留本机，git 里不放一张。
+.tmp/
+# 外部工具自己的记忆转储，与本仓库文档无关。
+.workbuddy/
+.codegraph/
+.vscode/
+# .qoder/worktrees/ 下是外部工具建的 git worktree，每份带独立 .git 与分支。
+# 它们是仓库副本，不是源码；加进暂存区会变成嵌套仓库的 gitlink。
+.qoder/
+
+# 缓存与开发期产物根（研究探针的 obj/bin、模型体检单 .cache/Review/、技能体检单 .cache/Skill/、
+# 离线出帧 .cache/Movie/）——图给人看不提交进版本库，任意层级一律剔除。
+# 代码里那一头的唯一出处是 src/Tools/Artifacts.cs（2026-09-29 从根目录 Artifacts/ 并进来）
+**/.cache/
+
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+*.user
+
+# vendored 包保持原样：Beehave 的图标伴随文件由编辑器就地生成，不追踪。
+# （2026-09-26 改：这条原来写成全局 `*.import`，但它实际挡的 29 个文件全在
+#  src/GugaFramework/beehave/ 下——注释里说的 addons 一个都没有。全局规则顺手把模型的
+#  .glb.import 也挡了，而那份伴随文件不可再生：里面那条 uid 每次首次导入随机发
+#  （实测删净重跑，.glb 逐字节相同、uid 从 cl6x4rtu6y2pr 变成 ov4mkcjoymc0）。
+#  ⇒ 按目录挡，不用「全局忽略 + !例外」那种补漏写法。出处见 模型与动画准则 5.1 节）
+src/GugaFramework/beehave/**/*.import
+
+# Test run artifacts (hang dumps / sequence logs)
+TestResults/
+
+# 本机 / 编辑器 / OS 垃圾：不进版本库。
+# 编辑器配置目录 .vscode/、.qoder/、.codegraph/ 已在上方按目录挡住
+# （含 .vscode/settings.json、.qoder/settings.json、.codegraph/.gitignore）。
+# *.trx 补 TestResults/ 之外散落的测试报告；*.log 会挡住将来要入库的
+# 日志证据，届时用 git add -f 显式加。
+*.trx
+*.log
+*.tmp
+*.bak
+*.orig
+*.rej
+*~
+*.suo
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+
+# 调试运行时的中间物：崩溃转储、性能跟踪、进程锁、调试符号、运行时缓存。
+# 这些文件由本机工具就地生成，删掉会重建；固定证据（uitest 脚本、
+# replay 基线、体检单）走 .cache/ 与 docs/ 另外的路，不受下面几条影响。
+*.dmp
+*.mdmp
+*.stackdump
+*.etl
+*.trace
+*.diagsession
+*.pid
+*.lock
+*.pdb
+*.cache
+*.up2date
+*.userosscache
+*.sln.docstates
+[Ll]ogs/

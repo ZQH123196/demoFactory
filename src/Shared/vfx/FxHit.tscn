@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3 uid="uid://b1x2flhy2f81k"]
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 0.18, 0.6, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.92, 0.6, 0.9, 0.5, 0.12, 0.02, 0.25, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fade"]
+gradient = SubResource("Gradient_fade")
+width = 64
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_burst"]
+emission_shape = 1
+emission_sphere_radius = 0.12
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 3.5
+initial_velocity_max = 6.5
+gravity = Vector3(0, -4, 0)
+damping_min = 1.0
+damping_max = 2.5
+scale_min = 0.5
+scale_max = 1.1
+color = Color(1, 1, 1, 1)
+color_ramp = SubResource("GradientTexture1D_fade")
+particle_flag_align_y = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_add"]
+transparency = 1
+shading_mode = 0
+blend_mode = 1
+cull_mode = 2
+billboard_mode = 3
+billboard_keep_scale = true
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_spark"]
+size = Vector2(0.32, 0.32)
+material = SubResource("StandardMaterial3D_add")
+
+[node name="FxHit" type="GPUParticles3D"]
+process_material = SubResource("ParticleProcessMaterial_burst")
+draw_pass_1 = SubResource("QuadMesh_spark")
+amount = 24
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+randomness = 0.0
+use_fixed_seed = true
+seed = 101

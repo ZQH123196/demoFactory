@@ -1,0 +1,170 @@
+[
+  {
+    "label": "根视口是 1920×1080（无头默认 64×64，不设的话控件坐标全错）",
+    "assertUi": "viewport=(1920, 1080)"
+  },
+  {
+    "label": "开局：标题屏那颗没有名字，按唯一可见文字点「开始游戏」",
+    "click": "开始游戏"
+  },
+  {
+    "label": "推进 10 个逻辑步（不等墙钟）",
+    "wait": 10
+  },
+  {
+    "label": "命令栏「停靠」：开出目的地弹层",
+    "click": "Dock"
+  },
+  {
+    "label": "选「贫城」——这一按就是 Dock 动词",
+    "click": "Destination0"
+  },
+  {
+    "label": "等它从野地开到贫城并靠上（40 米 = 1000 步，留余量）",
+    "wait": 1200
+  },
+  {
+    "label": "真的停住了",
+    "assert": "phase=poor_city"
+  },
+  {
+    "label": "三条用途的前置条件：仓库摆 4 单位魔晶、可用法力先花掉 5 格（eval 只摆条件，被验的用途仍走界面按钮）",
+    "eval": "var w = Main.World!; w.Town.ProduceCrystal(4.0); for (int i = 0; i < 5; i++) w.Town.TrySpendInstantMana(); return \"crystal=\" + w.CrystalWarehouse + \" mana=\" + w.Town.AvailableMana;"
+  },
+  {
+    "label": "仓库 4 单位、可用法力 7/12",
+    "assert": "crystal=0/0/4"
+  },
+  {
+    "label": "俯视甲板，点兽身开巨兽面板（走玩家那一条左键入口）",
+    "eval": "var b = Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X, (float)b.Z, 105f, 205f, 80f); var p = Main.Picker; string hit = \"\"; for (int y = 40; y < 1040 && hit == \"\"; y += 4) { for (int x = 40; x < 1880 && hit == \"\"; x += 4) { var r = p.Pick(new Godot.Vector2(x, y)); if (r.Target == DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit = x + \",\" + y; } } if (hit == \"\") throw new System.Exception(\"no-beast\"); var parts = hit.Split(','); var mi = Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); mi!.Invoke(Main, new object[] { new Godot.Vector2(int.Parse(parts[0]), int.Parse(parts[1])) }); var bf = Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); var bp = (Godot.Control)bf!.GetValue(Main)!; if (!bp.Visible) throw new System.Exception(\"beast-panel-closed at \" + hit); return \"opened \" + hit;"
+  },
+  {
+    "label": "等巨兽面板刷新",
+    "wait": 1
+  },
+  {
+    "label": "等面板重算置灰",
+    "sleep": 0.25
+  },
+  {
+    "label": "魔晶「补魔」那一颗：这一按就是 UseCrystal(mana) 动词",
+    "click": "UseMana"
+  },
+  {
+    "label": "补魔那一发成了",
+    "assert": "last_inject=ok"
+  },
+  {
+    "label": "补魔真的回填 5 格、仓库扣 1 单位",
+    "eval": "var w = Main.World!; if (w.Town.AvailableMana != 12 || w.CrystalWarehouse != 3) throw new System.Exception(\"mana=\" + w.Town.AvailableMana + \" wh=\" + w.CrystalWarehouse); return \"mana=\" + w.Town.AvailableMana + \" wh=\" + w.CrystalWarehouse;"
+  },
+  {
+    "label": "治疗的前置条件：把 w2 打成重伤（eval 只摆条件）",
+    "eval": "var u = Main.World!.Roster.Find(\"w2\"); if (u == null) throw new System.Exception(\"no w2\"); u.Hp = -10; u.State = DemoFactory.Prototypes.BeastArena.Logic.UnitState.Wounded; return u.StateText;"
+  },
+  {
+    "label": "等面板重摆治疗候选",
+    "sleep": 0.25
+  },
+  {
+    "label": "魔晶「治疗」那一颗：这一按就是 UseCrystal(heal) 动词",
+    "click": "UseHeal"
+  },
+  {
+    "label": "治疗那一发成了",
+    "assert": "last_inject=ok"
+  },
+  {
+    "label": "w2 站起来、仓库再扣 1 单位",
+    "eval": "var w = Main.World!; var u = w.Roster.Find(\"w2\")!; if (u.State != DemoFactory.Prototypes.BeastArena.Logic.UnitState.Standing || w.CrystalWarehouse != 2) throw new System.Exception(\"state=\" + u.StateText + \" wh=\" + w.CrystalWarehouse); return \"state=\" + u.StateText + \" wh=\" + w.CrystalWarehouse;"
+  },
+  {
+    "label": "修理的前置条件：饭馆打掉 20 点耐久、派一名工人在岗（eval 只摆条件）",
+    "eval": "Main.World!.DamageBuilding(\"restaurant\", 20.0); return Main.World.RepairBlockerOf(\"restaurant\").ToString();"
+  },
+  {
+    "label": "饭馆里有一名在岗工人",
+    "inject": "AssignPost|w1|restaurant"
+  },
+  {
+    "label": "收起巨兽面板：右键建筑菜单要能落到世界里",
+    "eval": "return Main.ClosePanels();"
+  },
+  {
+    "label": "俯视甲板，扫出饭馆的屏幕点，再走玩家那一条右键入口开建筑菜单",
+    "eval": "var b = Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X, (float)b.Z, 105f, 205f, 80f); if (!Main.World.CanRepair(\"restaurant\")) throw new System.Exception(\"blocker=\" + Main.World.RepairBlockerOf(\"restaurant\")); var p = Main.Picker; string hit = \"\"; for (int y = 40; y < 1040 && hit == \"\"; y += 4) { for (int x = 40; x < 1880 && hit == \"\"; x += 4) { var r = p.Pick(new Godot.Vector2(x, y)); if (r.Target == DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Building && r.BuildingId == \"restaurant\") hit = x + \",\" + y; } } if (hit == \"\") throw new System.Exception(\"no-restaurant\"); var parts = hit.Split(','); var mi = Main.GetType().GetMethod(\"OnWorldRightClicked\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); mi!.Invoke(Main, new object[] { new Godot.Vector2(int.Parse(parts[0]), int.Parse(parts[1])) }); var mf = Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); var menu = (Godot.Control)mf!.GetValue(Main)!; if (!menu.Visible) throw new System.Exception(\"menu-closed at \" + hit); return \"opened \" + hit;"
+  },
+  {
+    "label": "建筑菜单「修理」那一颗：开一条正在修理的活",
+    "click": "Repair"
+  },
+  {
+    "label": "修理那一发成了",
+    "assert": "last_inject=ok"
+  },
+  {
+    "label": "饭馆进入「正在修理」",
+    "eval": "var w = Main.World!; if (!w.Deck.IsRepairing(\"restaurant\")) throw new System.Exception(\"not-repairing\"); return \"repairing=1\";"
+  },
+  {
+    "label": "收起建筑菜单",
+    "eval": "var f = Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); ((DemoFactory.Prototypes.BeastArena.Ui.BuildingMenu)f!.GetValue(Main)!).Close(); return \"closed\";"
+  },
+  {
+    "label": "点兽身开巨兽面板（走玩家那一条左键入口）",
+    "eval": "var b = Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X, (float)b.Z, 105f, 205f, 80f); var p = Main.Picker; string hit = \"\"; for (int y = 40; y < 1040 && hit == \"\"; y += 4) { for (int x = 40; x < 1880 && hit == \"\"; x += 4) { var r = p.Pick(new Godot.Vector2(x, y)); if (r.Target == DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit = x + \",\" + y; } } if (hit == \"\") throw new System.Exception(\"no-beast\"); var parts = hit.Split(','); var mi = Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); mi!.Invoke(Main, new object[] { new Godot.Vector2(int.Parse(parts[0]), int.Parse(parts[1])) }); var bf = Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); var bp = (Godot.Control)bf!.GetValue(Main)!; if (!bp.Visible) throw new System.Exception(\"beast-panel-closed at \" + hit); return \"opened \" + hit;"
+  },
+  {
+    "label": "等巨兽面板刷新",
+    "wait": 1
+  },
+  {
+    "label": "等面板重摆修理候选",
+    "sleep": 0.25
+  },
+  {
+    "label": "魔晶「修理」那一颗：这一按就是 UseCrystal(repair) 动词",
+    "click": "UseRepair"
+  },
+  {
+    "label": "修理那一发成了",
+    "assert": "last_inject=ok"
+  },
+  {
+    "label": "饭馆当场修满、仓库再扣 1 单位",
+    "eval": "var w = Main.World!; if (w.Deck.IsRepairing(\"restaurant\") || w.CrystalWarehouse != 1) throw new System.Exception(\"repairing=\" + w.Deck.IsRepairing(\"restaurant\") + \" wh=\" + w.CrystalWarehouse); return \"repairing=0 wh=\" + w.CrystalWarehouse;"
+  },
+  {
+    "label": "收起巨兽面板：经营弹层要能点得到",
+    "eval": "return Main.ClosePanels();"
+  },
+  {
+    "label": "命令栏「经营」：开经营弹层（市场是第一栏）",
+    "click": "Operations"
+  },
+  {
+    "label": "等市场那一栏刷新",
+    "wait": 1
+  },
+  {
+    "label": "出售魔晶数量填 1",
+    "set": "SellCrystalCount=1"
+  },
+  {
+    "label": "市场「出售魔晶」那一颗：这一按就是 SellCrystal 动词",
+    "click": "SellCrystal"
+  },
+  {
+    "label": "出售那一发成了",
+    "assert": "last_inject=ok"
+  },
+  {
+    "label": "仓库那一单位魔晶出库",
+    "eval": "var w = Main.World!; if (w.CrystalWarehouse != 0) throw new System.Exception(\"wh=\" + w.CrystalWarehouse); return \"wh=\" + w.CrystalWarehouse + \" coin=\" + w.Town.Coin;"
+  },
+  {
+    "label": "收干净",
+    "eval": "return Main.ClosePanels();"
+  }
+]

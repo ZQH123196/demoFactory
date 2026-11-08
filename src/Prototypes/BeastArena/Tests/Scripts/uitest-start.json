@@ -1,0 +1,8 @@
+[
+  { "label": "根视口是 1920×1080（无头默认那档很小，不设就全错）", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "标题屏那颗没有名字，按可见文字唯一匹配点它", "click": "开始游戏" },
+  { "label": "推进 5 个逻辑步（不等墙钟）", "wait": 5 },
+  { "label": "世界真的推进了", "assert": "tick>0" },
+  { "label": "「开始游戏」那一按走的是 StartRun 那一发：流程推到开局航程", "assert": "flow=topoor" },
+  { "label": "开局在野地上，没有自动进港", "assert": "phase=sailing" }
+]

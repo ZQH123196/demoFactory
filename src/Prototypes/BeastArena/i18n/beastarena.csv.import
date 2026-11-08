@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b5cdr131wfru7"
+
+[deps]
+
+source_file="res://src/Prototypes/BeastArena/i18n/beastarena.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

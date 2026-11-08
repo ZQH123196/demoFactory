@@ -1,0 +1,34 @@
+[
+  { "label": "根视口是 1920×1080（无头默认 64×64，不设的话控件坐标全错）", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "开局：标题屏那颗没有名字，按唯一可见文字点「开始游戏」", "click": "开始游戏" },
+  { "label": "推进 10 个逻辑步（不等墙钟）", "wait": 10 },
+  { "label": "命令栏「停靠」：开出目的地弹层", "click": "Dock" },
+  { "label": "选「贫城」——这一按就是 Dock 动词", "click": "Destination0" },
+  { "label": "等它从野地开到贫城并靠上（40 米 = 1000 步，留余量）", "wait": 1200 },
+  { "label": "真的停住了", "assert": "phase=poor_city" },
+
+  { "label": "抓起那一发：抓一个镇民", "inject": "GrabEntity|w1" },
+  { "label": "手上正拿着哪一件写在快照头部那一格", "assert": "held=person:w1" },
+  { "label": "投进建筑那一发：把手上那个人投进粮仓的岗位", "inject": "DropToBuilding|w1|granary" },
+  { "label": "粮仓那一个岗位满了（建筑段那一格）", "assert": "posts=1/1" },
+  { "label": "w1 的岗位写在活物段那一格", "assert": "post=granary" },
+  { "label": "再抓一个", "inject": "GrabEntity|w2" },
+  { "label": "手上那一格换成 w2", "assert": "held=person:w2" },
+  { "label": "放回甲板那一发：落点写 10,10", "inject": "DropToDeck|w2|10|10" },
+  { "label": "手上那一格空了（键在、值空）", "assert": "held= church=" },
+
+  { "label": "土壤面板「开挖」那一颗：S1L1 开挖（走界面按钮那一路）", "click": "Dig1_1" },
+  { "label": "等这一格挖开（3 人 · 1 游戏小时 = 3600 步）", "wait": 3700 },
+  { "label": "那一格真的挖开了（土壤段那一格）", "assert": "SOIL 0_1 dug=1" },
+  { "label": "派到此格那一发：采矿岗只收工作人员", "inject": "AssignPost|w1|soil:0_1" },
+  { "label": "那一格的采矿岗上有人（土壤段那一格）", "assert": "miners=1/3" },
+
+  { "label": "拔起那一发：悬空占 1 格法力", "inject": "LiftBuilding|granary" },
+  { "label": "悬空那一档写在建筑段里", "assert": "lifted=1" },
+  { "label": "落位那一发：放回自己那几格", "inject": "DropBuilding|granary|-8|-2" },
+  { "label": "悬空那一档解掉了", "assert": "lifted=0" },
+  { "label": "建造那一发：摆一座传送阵（2×2，造价 300）", "inject": "PlaceBuilding|TeleportArray|-2|4" },
+  { "label": "在册建筑多了一座传送阵", "assert": "B b1 TeleportArray" },
+  { "label": "拆除那一发：镇政府不可拆，其余可拆", "inject": "RemoveBuilding|b1" },
+  { "label": "最后一发也成了", "assert": "last_inject=ok" }
+]

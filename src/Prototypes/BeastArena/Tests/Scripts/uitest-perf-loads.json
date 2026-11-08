@@ -1,0 +1,21 @@
+[
+  { "eval": "Main.StartNewRun(7); return \"started\";", "label": "固定种子开局" },
+  { "wait": 30, "label": "开局航程走一段" },
+  { "eval": "var w=Main.World!; int n=0; while(w.Units.Count(u=>u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Monster && u.State!=DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead && !u.LeftTown)<30){ w.Roster.Add(\"perf30_\"+(n++), DemoFactory.Prototypes.BeastArena.Logic.UnitRole.FreePerson); } return \"units=\"+w.Units.Count;", "label": "平时负载：加人形单位到 30" },
+  { "sleep": 5, "label": "预热" },
+  { "eval": "return Main.ResetPerf();", "label": "清采样窗（平时）" },
+  { "sleep": 30, "label": "平时负载采样 30 秒" },
+  { "read": "return Main.PerfReadout();", "label": "平时负载读数" },
+  { "eval": "var w=Main.World!; int n=0; while(w.Units.Count(u=>u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Monster && u.State!=DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead && !u.LeftTown)<100){ w.Roster.Add(\"perf100_\"+(n++), DemoFactory.Prototypes.BeastArena.Logic.UnitRole.FreePerson); } return \"units=\"+w.Units.Count;", "label": "聚集负载：加人形单位到 100" },
+  { "sleep": 5, "label": "预热" },
+  { "eval": "return Main.ResetPerf();", "label": "清采样窗（聚集）" },
+  { "sleep": 30, "label": "聚集负载采样 30 秒" },
+  { "read": "return Main.PerfReadout();", "label": "聚集负载读数" },
+  { "eval": "return Main.SetSpeed(8);", "label": "拧到 8 倍速" },
+  { "sleep": 3, "label": "倍速生效" },
+  { "eval": "return Main.ResetPerf();", "label": "清采样窗（8 倍速）" },
+  { "sleep": 20, "label": "8 倍速采样 20 秒" },
+  { "read": "return Main.PerfReadout();", "label": "8 倍速读数（应 ~80 步/秒）" },
+  { "eval": "return Main.SetSpeed(1);", "label": "拧回 1 倍速" },
+  { "read": "return Main.WorldReadout();", "label": "世界读数" }
+]

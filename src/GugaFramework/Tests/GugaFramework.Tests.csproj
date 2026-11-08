@@ -1,0 +1,64 @@
+<!--
+  公共层测试项目 —— 住公共层的逻辑件（技能层、技能试验场）在这里跑，不塞进任何原型的 Tests/。
+
+  为什么单开一个而不是挂到某个原型下面：技能试验场不隶属任何原型（「原型隔离」），
+  它的用例挂在任何原型的 Tests/ 里都会让场子变成那一个原型的私产。
+  源码链接编译（不引用主 csproj）：主项目是 Godot.NET.Sdk，会把 GodotSharp/引擎引用拖进测试进程；
+  而 GugaFramework 下的逻辑件是纯 C#（引擎无关），直接链接源码即可确定性测试（「逻辑层纯 C#」）。
+
+  下面那条排除面与四个原型测试项目、src/Tools 逐字同形 —— 在 GugaFramework/ 下新增一个吃 Godot 类型的
+  文件时，五处都得补，漏一处就报 CS0246「找不到命名空间 Godot」（症状离病根很远：主工程照过，
+  只有测试或工具线红）。2026-09-30 收编 ViewportCapture 时踩过，2026-10-01 加技能试验场场景壳时再踩一次。
+  刚补的一条是 Abilities\Stage\SkillStageScene.cs：场景壳吃 Node3D / Camera3D / Label3D，
+  逻辑壳（SkillStage.cs / SkillStageSpec.cs / SkillStageSample.cs）是纯 C#，链得进来、也就断得干净。
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <!-- xUnit v3 的测试工程是独立可执行程序集（v2 是库，运行器另起进程加载）。不设这行会报找不到入口点。 -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+<PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <!-- 断言库（配在 xUnit 上面，不替代它）：xUnit 内置 Assert 只有 True/False 带消息参数，
+         Equal / Contains / Null / InRange 这些都没有（实测 v3.2.2）。本项目的断言普遍带一句
+         中文判红理由，是判红时给 agent 指路的那条信息，丢不得（AGENTS.md 0.1 可调试性第一），
+         所以配 Shouldly：x.ShouldBe(y, "说明") 顶回 NUnit 的 Assert.That(x, Is.EqualTo(y), "说明")。
+         许可 Apache-2.0 免费商用 —— FluentAssertions 8 起转商业授权（~US$129.95/人/年），本项目不用。
+         坑：集合与字符串的 ShouldBe/ShouldContain 带说明时是四参（第三位 Case.Sensitive），标量才是三参。 -->
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\**\*.cs"
+             Exclude="..\Camera\**\*.cs;..\Animation\**\*.cs;..\I18n\**\*.cs;..\DebugBridge\DebugBridgeHost.cs;..\DebugBridge\DebugBridgeEval.cs;..\DebugBridge\DebugConsole.cs;..\DebugBridge\ViewportCapture.cs;..\DebugBridge\InputInjector.cs;..\beehave\**\*.cs;..\Guard\LogRateWatchdog.cs;..\Abilities\Stage\SkillStageScene.cs;..\Abilities\Stage\SkillStageOpenFieldScene.cs;..\Pathfinding\Stage\NavStageScene.cs;..\Pathfinding\Stage\NavStageUnitView.cs;..\FrontEnd\FrontEndLayer.cs;..\FrontEnd\FrontEndVerbs.cs;..\FrontEnd\Stage\FrontEndStageScene.cs;..\Vfx\VfxPlayer.cs;..\Vfx\SkillStageVfxCues.cs;..\Tests\**\*.cs"
+             LinkBase="GugaFramework" />
+    <!-- 技能体检单那份共用层（ticket 08）：「前摇对表」的判红口径与三栏的行/数投影类型
+         （SkillRow / SkillNumbers / JudgeWindup …）住在 src/Tools/，按文件点名链进来，
+         场子这一侧的用例才能与原型那一侧判的是同一份实现（「桥只转发」同一句理由：
+         「注入的路径」与「玩家走的路径」不许漂成两回事）。
+         点名到文件而不是通配 src/Tools/*.cs：那一整个工具程序集还含 Program / Tscn /
+         PreviewStage / Review / 两份 rig，与体检单无关（Review.cs 只因为 IPrototypeTools
+         声明了 ReviewContract 才在闭包里，链进来不带它就编不过）。
+         src/Tools 不引 GodotSharp（那份 csproj 零引擎依赖），所以链进来是纯 C#。 -->
+    <Compile Include="..\..\Tools\Skill.cs" LinkBase="Tools" />
+    <Compile Include="..\..\Tools\Facts.cs" LinkBase="Tools" />
+    <Compile Include="..\..\Tools\Artifacts.cs" LinkBase="Tools" />
+    <Compile Include="..\..\Tools\IPrototypeTools.cs" LinkBase="Tools" />
+    <Compile Include="..\..\Tools\Review.cs" LinkBase="Tools" />
+    <!-- 引擎可执行文件的三级找法（Review / Skill 共用那份，2026-10-06 从两处各一份收到一处）。 -->
+    <Compile Include="..\..\Tools\GodotBin.cs" LinkBase="Tools" />
+    <!-- 本目录内的测试文件不用写 Include：SDK 默认通配已收（写了会撞重复项） -->
+    <!-- TestPaths.cs / TestLog.cs 就在本目录，SDK 通配已经收进来了，
+         不要再用 ..\..\..\GugaFramework\Tests\ 路径点它们 —— 那是给别的测试工程用的，
+         在这里加会指向一个解析不出来的相对路径（CS2001）或撞重复项。 -->
+  </ItemGroup>
+
+</Project>

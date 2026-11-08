@@ -1,0 +1,1214 @@
+[
+  {
+    "assertUi": "viewport=(1920, 1080)",
+    "label": "根视口 1920×1080"
+  },
+  {
+    "click": "开始游戏",
+    "label": "标题屏「开始游戏」——StartRun 的界面入口"
+  },
+  {
+    "wait": 10,
+    "label": "推进 10 步"
+  },
+  {
+    "eval": "var w=Main.World!; var b=w.Voyage.Position; var cam=Main.GetViewport().GetCamera3D()!; Godot.Vector2 sp=default; double gx=0,gz=0; bool ok=false;\nfor(int r=15;r<=45 && !ok;r+=5){ for(int k=0;k<24 && !ok;k++){ double a=k*System.Math.PI/12.0; double tx=b.X+System.Math.Cos(a)*r, tz=b.Z+System.Math.Sin(a)*r; var s=cam.UnprojectPosition(new Godot.Vector3((float)tx,0f,(float)tz)); if(s.X<40||s.Y<80||s.X>1880||s.Y>960) continue; if(Main.Picker.Pick(s).Target!=DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Empty) continue; var o=cam.ProjectRayOrigin(s); var n=cam.ProjectRayNormal(s); if(System.Math.Abs(n.Y)<1e-6) continue; double t=-o.Y/n.Y; if(t<=0||t>900) continue; double hx=o.X+n.X*t, hz=o.Z+n.Z*t; if(System.Math.Sqrt((hx-tx)*(hx-tx)+(hz-tz)*(hz-tz))>2.5) continue; sp=s; gx=hx; gz=hz; ok=true; } }\nif(!ok) throw new System.Exception(\"no-empty-ground-for-sailto\");\nInput.ParseInputEvent(new Godot.InputEventMouseButton{ButtonIndex=Godot.MouseButton.Right,Pressed=true,Position=sp});\nInput.ParseInputEvent(new Godot.InputEventMouseButton{ButtonIndex=Godot.MouseButton.Right,Pressed=false,Position=sp});\nreturn \"sp=\"+sp+\" g=\"+gx.ToString(\"0.0\")+\",\"+gz.ToString(\"0.0\");",
+    "label": "右键点身旁空地——SailTo 手势（真实输入事件）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等输入帧"
+  },
+  {
+    "eval": "var w=Main.World!; if(w.Voyage.ManualTarget==null) throw new System.Exception(\"no-manual-target\"); return \"manual=\"+w.Voyage.ManualTargetText();",
+    "label": "手动目标写进航海器"
+  },
+  {
+    "eval": "var w=Main.World!; if(w.Voyage.ManualTarget==null) throw new System.Exception(\"no-manual-target\"); for(int i=0;i<3000;i++){ if(w.Voyage.ManualTarget==null) break; Main.AdvanceToDebug(w.Tick+5);} if(w.Voyage.ManualTarget!=null) throw new System.Exception(\"manual-stuck\"); return \"tick=\"+w.Tick+\" phase=\"+w.Voyage.Phase;",
+    "label": "手动航行到点（停稳后 Dock 才点得动）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Dock",
+    "label": "命令栏「停靠」"
+  },
+  {
+    "click": "Destination0",
+    "label": "目的地「贫城」——Dock 动词"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<700;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "等驶抵贫城（手动航行先绕了一小段，按到港判）"
+  },
+  {
+    "assert": "phase=poor_city",
+    "label": "停靠成功"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-poor-dock.png\");",
+    "label": "贫城靠港：战略档全景（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-poor-dock.png\");",
+    "label": "贫城靠港：战略档全景（补拍一帧）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Operations",
+    "label": "命令栏「经营」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "set": "SellOre=4",
+    "label": "卖矿石 4（留货给沙城成交）"
+  },
+  {
+    "click": "Trade",
+    "label": "市场「成交」——TradeAirship 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "last_inject=ok",
+    "label": "成交成功"
+  },
+  {
+    "set": "SupplyFood=5",
+    "label": "买补给 5"
+  },
+  {
+    "click": "Buy",
+    "label": "市场「采购」——BuySupply 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "last_inject=ok",
+    "label": "采购成功"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起经营弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Slot6",
+    "label": "蓝图条「空船停靠区」槽位"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,60f,0f,60f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=20;y<1060&&hit==\"\";y+=4){for(int x=20;x<1900&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.DeckCell){var c=DemoFactory.Prototypes.BeastArena.Logic.DeckBlueprints.CandidateOf(r.Cell); if(System.Math.Abs(c.X-(-9))<2.0 && System.Math.Abs(c.Y-(-11))<2.1) hit=x+\",\"+y;}}}\nif(hit==\"\") throw new System.Exception(\"no-cell\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nreturn \"cell \"+hit;",
+    "label": "点甲板格落座——PlaceBuilding 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "AirshipDock",
+    "label": "空艇码头在册"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起弹层与幽灵"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Building && r.BuildingId==\"town_hall\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-town_hall\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldRightClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar mf=Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var menu=(Godot.Control)mf!.GetValue(Main)!; if(!menu.Visible) throw new System.Exception(\"menu-closed\");\nreturn \"opened town_hall\";",
+    "label": "右键镇政府开菜单"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Recruit",
+    "label": "镇政府菜单「招募」——开招募框"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "TownOrCountry/Pick",
+    "label": "招募：城乡招 1"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "TownOrCountry/Pick",
+    "label": "招募：城乡招 2"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "TownOrCountry/Pick",
+    "label": "招募：城乡招 3"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "RECRUIT left=0 used=3",
+    "label": "本停招满 3 人"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起招募框"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Operations",
+    "label": "命令栏「经营」"
+  },
+  {
+    "eval": "var f=Main.GetType().GetField(\"_operations\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var op=(DemoFactory.Prototypes.BeastArena.Ui.OperationsPanel)f!.GetValue(Main)!; op.Tabs.CurrentTab=1; return \"tab=\"+op.Tabs.CurrentTab;",
+    "label": "切到「账本与工资」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "set": "Hotel=1",
+    "label": "酒店定价 1"
+  },
+  {
+    "set": "Restaurant=1",
+    "label": "饭店定价 1"
+  },
+  {
+    "set": "Ticket=2",
+    "label": "门票定价 2"
+  },
+  {
+    "click": "ApplyPricing",
+    "label": "账本「应用」——SetPricing 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "PayWages",
+    "label": "账本「发薪」——PayWages 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "wages_due=0",
+    "label": "发薪后应发归零"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起经营弹层"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Building && r.BuildingId==\"arena\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-arena\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldRightClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar mf=Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var menu=(Godot.Control)mf!.GetValue(Main)!; if(!menu.Visible) throw new System.Exception(\"menu-closed\");\nreturn \"opened arena\";",
+    "label": "右键竞技场开菜单"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "StartMatch",
+    "label": "竞技场「开赛」——StartMatch 动词"
+  },
+  {
+    "wait": 904,
+    "label": "等办赛收场"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "eval": "var w=Main.World!; if(w.Tick<14420) Main.AdvanceToDebug(14420); return \"tick=\"+w.Tick;",
+    "label": "把时钟推到日界后（与确定性基线同一时间线）"
+  },
+  {
+    "click": "Dig1_1",
+    "label": "土壤面板「开挖」第 1 层——ExcavateSoil 动词"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<80;i++){ if(w.Soil.IsDug(0,1)) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" dug=0_1=\"+w.Soil.IsDug(0,1);",
+    "label": "等第 1 层挖开"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Dig1_2",
+    "label": "土壤面板「开挖」第 2 层"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<80;i++){ if(w.Soil.IsDug(0,2)) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" dug=0_2=\"+w.Soil.IsDug(0,2);",
+    "label": "等第 2 层挖开"
+  },
+  {
+    "assert": "SOIL 0_2 dug=1",
+    "label": "第 2 层已挖开"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==\"w1\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-w1\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=\"w1\") throw new System.Exception(\"selected=\"+sel.SelectedId);\nreturn \"selected w1\";",
+    "label": "选中 w1"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "土壤面板「派到此格」——AssignPost(1)"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==\"w2\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-w2\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=\"w2\") throw new System.Exception(\"selected=\"+sel.SelectedId);\nreturn \"selected w2\";",
+    "label": "选中 w2"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "AssignPost(2)"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==\"w3\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-w3\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=\"w3\") throw new System.Exception(\"selected=\"+sel.SelectedId);\nreturn \"selected w3\";",
+    "label": "选中 w3"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "AssignPost(3)"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "miners=3/3",
+    "label": "三个采矿岗满"
+  },
+  {
+    "click": "Cave1_2",
+    "label": "土壤面板「清剿」——ClearCave 动词"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<120;i++){ if(w.Soil.IsCleared(0,2)) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" cleared=\"+w.Soil.IsCleared(0,2)+\" battle=\"+w.Battle.Occasion;",
+    "label": "等洞穴清剿收场"
+  },
+  {
+    "assert": "cleared=1",
+    "label": "洞穴已清剿"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "PullAnchor",
+    "label": "命令栏「拔锚」——PullAnchor 动词"
+  },
+  {
+    "assert": "battle=defence",
+    "label": "贫城防守开打"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(!w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" defence=\"+w.Battle.IsDefence;",
+    "label": "等防守收场"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "eval": "Main.CameraSetPose((float)Main.World!.Voyage.Position.X,(float)Main.World!.Voyage.Position.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "防守后机位摆到甲板拾取档"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var w=Main.World!; var p=Main.Picker; string want=\"\"; foreach(var u in w.Units){ if(u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Worker||u.State==DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead||u.LeftTown) continue; if(u.Post==\"soil:0_2\") continue; want=u.Id; break; } if(want==\"\") throw new System.Exception(\"no-idle-worker\"); string hit=\"\"; for(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==want) hit=x+\",\"+y;}} if(hit==\"\") throw new System.Exception(\"not-pickable:\"+want); var q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))}); var sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=want) throw new System.Exception(\"selected=\"+sel.SelectedId); return \"selected \"+want;",
+    "label": "选中空闲矿工（1）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "矿工回岗（1）——AssignPost"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var w=Main.World!; var p=Main.Picker; string want=\"\"; foreach(var u in w.Units){ if(u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Worker||u.State==DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead||u.LeftTown) continue; if(u.Post==\"soil:0_2\") continue; want=u.Id; break; } if(want==\"\") throw new System.Exception(\"no-idle-worker\"); string hit=\"\"; for(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==want) hit=x+\",\"+y;}} if(hit==\"\") throw new System.Exception(\"not-pickable:\"+want); var q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))}); var sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=want) throw new System.Exception(\"selected=\"+sel.SelectedId); return \"selected \"+want;",
+    "label": "选中空闲矿工（2）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "矿工回岗（2）——AssignPost"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var w=Main.World!; var p=Main.Picker; string want=\"\"; foreach(var u in w.Units){ if(u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Worker||u.State==DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead||u.LeftTown) continue; if(u.Post==\"soil:0_2\") continue; want=u.Id; break; } if(want==\"\") throw new System.Exception(\"no-idle-worker\"); string hit=\"\"; for(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Person && r.Person!=null && r.Person.Id==want) hit=x+\",\"+y;}} if(hit==\"\") throw new System.Exception(\"not-pickable:\"+want); var q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))}); var sf=Main.GetType().GetField(\"_selection\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var sel=(DemoFactory.Prototypes.BeastArena.Ui.SelectionPanel)sf!.GetValue(Main)!; if(sel.SelectedId!=want) throw new System.Exception(\"selected=\"+sel.SelectedId); return \"selected \"+want;",
+    "label": "选中空闲矿工（3）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Assign1_2",
+    "label": "矿工回岗（3）——AssignPost"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-beast\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar bf=Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var bp=(Godot.Control)bf!.GetValue(Main)!; if(!bp.Visible) throw new System.Exception(\"beast-panel-closed\");\nreturn \"beast-open\";",
+    "label": "点兽身开巨兽面板"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "read": "var w=Main.World!; return \"food=\"+w.Town.Food+\" granary=\"+w.Voyage.GranaryFood+\" fed=\"+w.Growth.FedTotalFood+\" sat=\"+w.Ecology.Satiation;",
+    "label": "喂食前存粮"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 1——Feed 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 2"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 3"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 4"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 5"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 6"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 7"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "click": "FeedButton",
+    "label": "喂食 8"
+  },
+  {
+    "wait": 2,
+    "label": "推进 2 步"
+  },
+  {
+    "assert": "fed=400/400",
+    "label": "暴食态解锁线已到"
+  },
+  {
+    "assert": "sat>=75",
+    "label": "饱食度 75 以上上路"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起巨兽面板"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Dock",
+    "label": "命令栏「停靠」"
+  },
+  {
+    "click": "Destination3",
+    "label": "目的地「沙城」"
+  },
+  {
+    "eval": "var w=Main.World!; double px=0,pz=0; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_1\"){px=x.Position.X;pz=x.Position.Z;}}\ndouble d=999; for(int i=0;i<6000;i++){ var p=w.Voyage.Position; d=System.Math.Sqrt((p.X-px)*(p.X-px)+(p.Z-pz)*(p.Z-pz)); if(d<9.0) break; Main.AdvanceToDebug(w.Tick+1);}\nif(d>=9.0) throw new System.Exception(\"did-not-approach d=\"+d.ToString(\"0.00\"));\nreturn \"tick=\"+w.Tick+\" d=\"+d.ToString(\"0.00\")+\" ore=\"+px.ToString(\"0.0\")+\",\"+pz.ToString(\"0.0\");",
+    "label": "等船开到第一处矿 9 米内"
+  },
+  {
+    "read": "var w=Main.World!; double d=999; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_1\"){var p=w.Voyage.Position; d=System.Math.Sqrt((p.X-x.Position.X)*(p.X-x.Position.X)+(p.Z-x.Position.Z)*(p.Z-x.Position.Z));}} return \"id=ore_poor_1 d=\"+d.ToString(\"0.00\")+\" sat=\"+w.Ecology.Satiation.ToString(\"0.0\")+\" dig=\"+w.Ecology.DigestionProgress.ToString(\"0.0\")+\" phase=\"+w.Voyage.Phase;",
+    "label": "第一处矿距离"
+  },
+  {
+    "click": "EatTarget",
+    "label": "命令栏「吞食」——开吞食面板"
+  },
+  {
+    "click": "Eat_ore_poor_1",
+    "label": "吞食面板第一处矿——EatTarget 动词"
+  },
+  {
+    "wait": 350,
+    "label": "等这一口吃完"
+  },
+  {
+    "assert": "ECO ore_poor_1 kind=ore pos=150.0,150.0 state=eaten",
+    "label": "第一处矿已吞"
+  },
+  {
+    "assert": "dig=60",
+    "label": "消化进度 60"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起吞食面板"
+  },
+  {
+    "eval": "var w=Main.World!; double px=0,pz=0; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_2\"){px=x.Position.X;pz=x.Position.Z;}}\ndouble d=999; for(int i=0;i<6000;i++){ var p=w.Voyage.Position; d=System.Math.Sqrt((p.X-px)*(p.X-px)+(p.Z-pz)*(p.Z-pz)); if(d<9.0) break; Main.AdvanceToDebug(w.Tick+1);}\nif(d>=9.0) throw new System.Exception(\"did-not-approach d=\"+d.ToString(\"0.00\"));\nreturn \"tick=\"+w.Tick+\" d=\"+d.ToString(\"0.00\")+\" ore=\"+px.ToString(\"0.0\")+\",\"+pz.ToString(\"0.0\");",
+    "label": "返航后自动航线继续，等船开到第二处矿 9 米内"
+  },
+  {
+    "read": "var w=Main.World!; double d=999; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_2\"){var p=w.Voyage.Position; d=System.Math.Sqrt((p.X-x.Position.X)*(p.X-x.Position.X)+(p.Z-x.Position.Z)*(p.Z-x.Position.Z));}} return \"id=ore_poor_2 d=\"+d.ToString(\"0.00\")+\" sat=\"+w.Ecology.Satiation.ToString(\"0.0\")+\" dig=\"+w.Ecology.DigestionProgress.ToString(\"0.0\")+\" phase=\"+w.Voyage.Phase;",
+    "label": "第二处矿距离"
+  },
+  {
+    "click": "EatTarget",
+    "label": "命令栏「吞食」"
+  },
+  {
+    "click": "Eat_ore_poor_2",
+    "label": "吞食面板第二处矿——EatTarget 动词"
+  },
+  {
+    "wait": 350,
+    "label": "等这一口吃完"
+  },
+  {
+    "assert": "dig=120",
+    "label": "两块矿 120 消化 = 第一单位魔晶"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起吞食面板"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<700;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "吃完返航，自动航线继续，等驶抵沙城"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "沙城·靠岸后收弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Operations",
+    "label": "沙城·命令栏「经营」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var f=Main.GetType().GetField(\"_operations\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var op=(DemoFactory.Prototypes.BeastArena.Ui.OperationsPanel)f!.GetValue(Main)!; op.Tabs.CurrentTab=0; return \"tab=\"+op.Tabs.CurrentTab;",
+    "label": "沙城·切到「市场」那一栏"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "set": "SellOre=12",
+    "label": "沙城·卖矿石 12"
+  },
+  {
+    "read": "var w=Main.World!; return \"tick=\"+w.Tick+\" ore=\"+w.Town.Ore+\" coin=\"+w.Town.Coin+\" wages=\"+w.WagesDue+\" window=\"+w.InAirshipWindow;",
+    "label": "沙城·成交前读数"
+  },
+  {
+    "click": "Trade",
+    "label": "沙城·市场「成交」——TradeAirship 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "last_inject=ok",
+    "label": "沙城·成交成功"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起经营弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.CrystalWarehouse>=1) break; Main.AdvanceToDebug(w.Tick+5);} return \"tick=\"+w.Tick+\" deck=\"+w.CrystalOnDeck+\" carry=\"+w.CrystalCarrying+\" wh=\"+w.CrystalWarehouse;",
+    "label": "等魔晶搬进仓库"
+  },
+  {
+    "assert": "crystal=0/0/1",
+    "label": "仓库里有 1 单位魔晶"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步让面板刷新"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Embed1_2",
+    "label": "土壤面板「嵌入魔晶」——EmbedCrystal 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "embedded=1",
+    "label": "魔晶已嵌入"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-beast\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar bf=Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var bp=(Godot.Control)bf!.GetValue(Main)!; if(!bp.Visible) throw new System.Exception(\"beast-panel-closed\");\nreturn \"beast-open\";",
+    "label": "点兽身开巨兽面板"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "FormGlutton",
+    "label": "巨兽面板「暴食态」——SwitchForm 动词"
+  },
+  {
+    "wait": 3,
+    "label": "推进 3 步"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起巨兽面板"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-sand-glutton.png\");",
+    "label": "沙城靠港：暴食态与甲板（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-sand-glutton.png\");",
+    "label": "沙城靠港：暴食态与甲板（补拍一帧）"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Building && r.BuildingId==\"arena\") hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-arena\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldRightClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar mf=Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var menu=(Godot.Control)mf!.GetValue(Main)!; if(!menu.Visible) throw new System.Exception(\"menu-closed\");\nreturn \"opened arena\";",
+    "label": "右键竞技场开菜单"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "StartMatch",
+    "label": "竞技场「开赛」"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.Battle.Occasion.ToString()==\"None\") break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" battle=\"+w.Battle.Occasion;",
+    "label": "等办赛收场"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(w.Town.SpecialMaterial>=10) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" mat=\"+w.Town.SpecialMaterial;",
+    "label": "等特殊材料够 10"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "先收干净"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-beast\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar bf=Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var bp=(Godot.Control)bf!.GetValue(Main)!; if(!bp.Visible) throw new System.Exception(\"beast-panel-closed\");\nreturn \"beast-open\";",
+    "label": "点兽身开巨兽面板"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Advance",
+    "label": "巨兽面板「进阶」——AdvanceTier 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "last_inject=ok",
+    "label": "进阶受理"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<100;i++){ if(!w.InRitual) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" ritual=\"+w.InRitual;",
+    "label": "等进阶仪式落地"
+  },
+  {
+    "assert": "BEAST beast tier=2",
+    "label": "二阶成形"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起巨兽面板"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-tier2.png\");",
+    "label": "二阶成形：战略档全景（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-tier2.png\");",
+    "label": "二阶成形：战略档全景（补拍一帧）"
+  },
+  {
+    "eval": "var w=Main.World!; if(w.Tick<22200) Main.AdvanceToDebug(22200); return \"tick=\"+w.Tick;",
+    "label": "推进到 22200"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "PullAnchor",
+    "label": "命令栏「拔锚」——沙城防守"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(!w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" defence=\"+w.Battle.IsDefence;",
+    "label": "等沙城防守收场"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Dock",
+    "label": "命令栏「停靠」"
+  },
+  {
+    "click": "Destination2",
+    "label": "目的地「富城」"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<700;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "等驶抵富城"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "富城·靠岸后收弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Operations",
+    "label": "富城·命令栏「经营」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var f=Main.GetType().GetField(\"_operations\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var op=(DemoFactory.Prototypes.BeastArena.Ui.OperationsPanel)f!.GetValue(Main)!; op.Tabs.CurrentTab=0; return \"tab=\"+op.Tabs.CurrentTab;",
+    "label": "富城·切到「市场」那一栏"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "set": "SellOre=12",
+    "label": "富城·卖矿石 12"
+  },
+  {
+    "set": "SellMaterial=3",
+    "label": "富城·卖特殊材料 3"
+  },
+  {
+    "read": "var w=Main.World!; return \"tick=\"+w.Tick+\" ore=\"+w.Town.Ore+\" coin=\"+w.Town.Coin+\" wages=\"+w.WagesDue+\" window=\"+w.InAirshipWindow;",
+    "label": "富城·成交前读数"
+  },
+  {
+    "click": "Trade",
+    "label": "富城·市场「成交」——TradeAirship 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "assert": "last_inject=ok",
+    "label": "富城·成交成功"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起经营弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-rich-deck.png\");",
+    "label": "富城甲板（截图）"
+  },
+  {
+    "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=20;y<1060&&hit==\"\";y+=4){for(int x=20;x<1900&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Building){var c=DemoFactory.Prototypes.BeastArena.Logic.DeckBlueprints.CandidateOf(r.Cell); if(System.Math.Abs(c.X-(-9))<2.0 && System.Math.Abs(c.Y-(-7))<2.1) hit=x+\",\"+y;}}}\nif(hit==\"\") throw new System.Exception(\"no-removable-building\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldRightClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar mf=Main.GetType().GetField(\"_buildingMenu\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var menu=(Godot.Control)mf!.GetValue(Main)!; if(!menu.Visible) throw new System.Exception(\"menu-closed\");\nreturn \"opened building\";",
+    "label": "右键 (-9,-7) 那栋建筑开菜单"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Remove",
+    "label": "建筑菜单「拆除」——RemoveBuilding 动词"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "Operations",
+    "label": "命令栏「经营」"
+  },
+  {
+    "eval": "var f=Main.GetType().GetField(\"_operations\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var op=(DemoFactory.Prototypes.BeastArena.Ui.OperationsPanel)f!.GetValue(Main)!; op.Tabs.CurrentTab=1; return \"tab=\"+op.Tabs.CurrentTab;",
+    "label": "切到「账本与工资」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "PayWages",
+    "label": "账本「发薪」"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起经营弹层"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "PullAnchor",
+    "label": "命令栏「拔锚」——最终防守"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<800;i++){ if(w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+5);} return \"tick=\"+w.Tick+\" battle=\"+w.Battle.Occasion;",
+    "label": "等最终防守开打"
+  },
+  {
+    "assert": "battle=finaldefence",
+    "label": "最终防守确认"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "wait": 1,
+    "label": "推进 1 步"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-final-defence.png\");",
+    "label": "富城最终防守：战略档（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-final-defence.png\");",
+    "label": "富城最终防守：战略档（补拍一帧）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "wait": 5,
+    "label": "推进 5 步"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<900;i++){ if(w.Flow.FinalVictoryTick>=0) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" victory=\"+w.Flow.FinalVictoryTick;",
+    "label": "等最终防守胜利"
+  },
+  {
+    "assert": "battle=none",
+    "label": "防守已收场"
+  },
+  {
+    "eval": "return Main.ClosePanels();",
+    "label": "收起战报"
+  },
+  {
+    "wait": 2,
+    "label": "推进 2 步"
+  },
+  {
+    "assert": "settlement",
+    "label": "进入终局结算"
+  },
+  {
+    "click": "结算",
+    "label": "命令栏「结算」回看终局结算"
+  },
+  {
+    "wait": 1,
+    "label": "让结算面板上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-settlement.png\");",
+    "label": "终局结算屏（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-settlement.png\");",
+    "label": "终局结算屏（补拍一帧）"
+  },
+  {
+    "sleep": 0.25,
+    "label": "等面板刷新"
+  },
+  {
+    "click": "ContinueBusiness",
+    "label": "结算「继续经营」——ContinueBusiness 动词"
+  },
+  {
+    "wait": 20,
+    "label": "推进 20 步"
+  },
+  {
+    "assert": "flow=freeplay",
+    "label": "阶段转自由经营"
+  },
+  {
+    "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();",
+    "label": "机位摆好（等吸附）"
+  },
+  {
+    "sleep": 0.6,
+    "label": "等机位吸附"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-continued.png\");",
+    "label": "继续经营：战略档（截图）"
+  },
+  {
+    "wait": 1,
+    "label": "让这一帧上屏"
+  },
+  {
+    "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-continued.png\");",
+    "label": "继续经营：战略档（补拍一帧）"
+  },
+  {
+    "read": "return Main.WorldReadout();",
+    "label": "继续经营读数"
+  }
+]

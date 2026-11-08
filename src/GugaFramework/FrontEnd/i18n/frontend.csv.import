@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://vccx37d2gjy3"
+
+[deps]
+
+source_file="res://src/GugaFramework/FrontEnd/i18n/frontend.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

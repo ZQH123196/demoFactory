@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://ba7r1y0m0x4qk"]
+
+[ext_resource type="Script" uid="uid://b3g6atcyvbvo0" path="res://src/Prototypes/BattleArray/Scripts/Main.cs" id="1_main"]
+
+[node name="Main" type="Node" unique_id=1967893623]
+script = ExtResource("1_main")
+
+[node name="World" type="Node3D" parent="." unique_id=810171287]
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1410381889]

@@ -1,0 +1,19 @@
+[
+  { "assertUi": "viewport=(1920, 1080)", "label": "根视口 1920×1080" },
+  { "click": "开始游戏", "label": "标题屏「开始游戏」" },
+  { "wait": 10, "label": "推进 10 步" },
+  { "click": "Dock", "label": "命令栏「停靠」" },
+  { "click": "Destination0", "label": "目的地「贫城」" },
+  { "eval": "var w=Main.World!; for(int i=0;i<600;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;", "label": "等靠上贫城" },
+  { "eval": "var w=Main.World!; w.Voyage.SetSatiation(50.0); w.Town.TrySpendFood(w.Town.Food); w.Town.ProduceFood(100.0); return \"sat=\"+w.Voyage.Satiation+\" food=\"+w.Town.Food;", "label": "摆前置：饱食 50、镇仓 100" },
+  { "eval": "var b=Main.World!.Voyage.Position; Main.CameraSetPose((float)b.X,(float)b.Z,105f,205f,80f); return Main.CameraReadout();", "label": "机位对准巨兽" },
+  { "sleep": 0.6, "label": "等一帧出图" },
+  { "eval": "var p=Main.Picker; string hit=\"\";\nfor(int y=200;y<900&&hit==\"\";y+=4){for(int x=200;x<1700&&hit==\"\";x+=4){var r=p.Pick(new Godot.Vector2(x,y)); if(r.Target==DemoFactory.Prototypes.BeastArena.Ui.PickTarget.Beast) hit=x+\",\"+y;}}\nif(hit==\"\") throw new System.Exception(\"no-beast\");\nvar q=hit.Split(','); var mi=Main.GetType().GetMethod(\"OnWorldClicked\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); mi!.Invoke(Main,new object[]{new Godot.Vector2(int.Parse(q[0]),int.Parse(q[1]))});\nvar bf=Main.GetType().GetField(\"_beastPanel\", System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance); var bp=(Godot.Control)bf!.GetValue(Main)!; if(!bp.Visible) throw new System.Exception(\"beast-panel-closed\");\nreturn \"beast-open\";", "label": "点兽身开巨兽面板" },
+  { "wait": 1, "label": "推进 1 步" },
+  { "sleep": 0.25, "label": "等面板刷新" },
+  { "click": "NpcFeedButton", "label": "巨兽面板「让工人喂 5 食物」" },
+  { "wait": 1, "label": "推进 1 步" },
+  { "eval": "var w=Main.World!; if(w.Voyage.Satiation<50.99) throw new System.Exception(\"sat=\"+w.Voyage.Satiation); if(w.Town.Food>95.01) throw new System.Exception(\"food=\"+w.Town.Food); if(w.Voyage.FedTotalFood<5.0) throw new System.Exception(\"fed=\"+w.Voyage.FedTotalFood); return \"sat=\"+w.Voyage.Satiation+\" food=\"+w.Town.Food+\" fed=\"+w.Voyage.FedTotalFood;", "label": "饱食 +1、镇仓 −5、暴食进度 +5" },
+  { "eval": "return Main.ClosePanels();", "label": "收起弹层" },
+  { "read": "return Main.WorldReadout();", "label": "世界读数" }
+]

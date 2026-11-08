@@ -1,0 +1,22 @@
+[
+  { "label": "根视口是 1920×1080", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "开局", "click": "开始游戏" },
+  { "label": "推 10 步", "wait": 10 },
+  { "label": "打开暂停屏（与 Esc 同一个 Open）", "eval": "return Main.OpenPauseMenu();" },
+  { "label": "暂停屏在栈顶", "eval": "var r=Main.FrontReadout(); if(!r.Contains(\"top=Pause\")) throw new System.Exception(r); return r;" },
+  { "label": "暂停屏出图", "eval": "return Main.CaptureScreenshot(\"C:/Users/ZQH12/Desktop/project/demoFactory/.cache/beast-arena-vs/T23/ui-pause.png\");" },
+  { "label": "点「操作说明」", "click": "操作说明" },
+  { "label": "等操作说明开（暂停中不推逻辑步）", "sleep": 0.3 },
+  { "label": "收起全部弹层", "eval": "return Main.ClosePanels();" },
+  { "label": "重新打开暂停屏", "eval": "return Main.OpenPauseMenu();" },
+  { "label": "点「重开一局」", "click": "重开一局" },
+  { "label": "等新局开局", "wait": 5 },
+  { "label": "新局从零开始", "eval": "var w=Main.World!; if(w.Tick>50) throw new System.Exception(\"tick=\"+w.Tick); return \"tick=\"+w.Tick;" },
+  { "label": "再打开暂停屏", "eval": "return Main.OpenPauseMenu();" },
+  { "label": "点「回标题」", "click": "回标题" },
+  { "label": "标题屏在栈顶", "eval": "var r=Main.FrontReadout(); if(!r.Contains(\"top=Title\")) throw new System.Exception(r); return r;" },
+  { "label": "从标题屏再开一局", "click": "开始游戏" },
+  { "label": "推 10 步", "wait": 10 },
+  { "label": "新局在开往贫城的路上", "assert": "phase=sailing" },
+  { "label": "读一次末态", "read": "return Main.WorldReadout();" }
+]

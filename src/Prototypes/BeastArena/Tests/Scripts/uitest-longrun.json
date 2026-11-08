@@ -1,0 +1,166 @@
+[
+  {
+    "assertUi": "viewport=(1920, 1080)",
+    "label": "根视口 1920×1080"
+  },
+  {
+    "click": "开始游戏",
+    "label": "标题屏「开始游戏」"
+  },
+  {
+    "wait": 10,
+    "label": "推进 10 步"
+  },
+  {
+    "click": "Dock",
+    "label": "命令栏「停靠」"
+  },
+  {
+    "click": "Destination0",
+    "label": "目的地「贫城」"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<600;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "等靠上贫城"
+  },
+  {
+    "assert": "phase=poor_city",
+    "label": "停靠成功"
+  },
+  {
+    "eval": "var w=Main.World!; int n=0; while(w.Units.Count(u=>u.Role!=DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Monster && u.State!=DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead && !u.LeftTown)<100){ w.Roster.Add(\"soak_\"+(n++), DemoFactory.Prototypes.BeastArena.Logic.UnitRole.FreePerson); } return \"units=\"+w.Units.Count;",
+    "label": "把在场人形单位堆到 100（平时/聚集峰值那一档）"
+  },
+  {
+    "sleep": 5.0,
+    "label": "等五秒让新建的人的视图接满"
+  },
+  {
+    "eval": "Main.ResetPerf(); return \"reset\";",
+    "label": "清采样窗"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 5 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 5 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 10 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 10 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 15 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 15 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 20 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 20 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 25 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 25 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 30 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 30 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 35 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 35 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 40 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 40 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 45 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 45 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 50 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 50 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 55 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 55 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 60 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 60 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 65 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 65 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 70 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 70 分钟读数"
+  },
+  {
+    "sleep": 300.0,
+    "label": "第 75 分钟：静置 300 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "第 75 分钟读数"
+  },
+  {
+    "read": "return Main.WorldReadout();",
+    "label": "结束时世界读数"
+  }
+]

@@ -1,0 +1,18 @@
+cp;0;0;布阵期开局;351;6c84c8a8f68f4d314ef6a98c90d4902cf363649c1e705ebd5251882d7e233767;等
+cp;3;0;路障摆好之后;510;16a1bed433f3dea50694f28c2d36d100632746bb8f778319262675d2f5944b99;等
+cp;5;0;摆上一个坦克之后;529;d2ae689921fa662c69725a85a58acef6a4acad645e5009a82e384b68e6b79b73;等
+cp;7;0;坦克挪到后排之后;529;518abfa875e7bbec79945081b5c2bf205ba23a34903c30c1fa1bcab99fcfad09;等
+cp;9;0;摆子三条都写完;510;16a1bed433f3dea50694f28c2d36d100632746bb8f778319262675d2f5944b99;等
+cp;13;900;开打之后阵面不动;557;7bd2a990bd965668e7b54aafa3b86c8c7c0d2cdc50fc5e20098d65fd05efaedf;等
+--- 布阵期开局 @tick=0 ---
+tick=0 seconds=0.00 phase=Deploying outcome=Running ours=1/1 theirs=1/1 | u p01 side=Player kind=Rider hp=150/150 pos=(0,7) cd=0 dealt=0/0 | u e01 side=Enemy kind=Archer hp=90/90 pos=(0,-7) cd=0 dealt=0/0 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=1/15 purse=2100/2250 spent=150 | C r0c2 kind=rider
+--- 路障摆好之后 @tick=0 ---
+tick=0 seconds=0.00 phase=Deploying outcome=Running ours=1/1 theirs=1/1 | u p01 side=Player kind=Rider hp=150/150 pos=(0,7) cd=0 dealt=0/0 | u e01 side=Enemy kind=Archer hp=90/90 pos=(0,-7) cd=0 dealt=0/0 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=1/15 purse=2100/2250 spent=150 | C r0c2 kind=rider | construction kind=Cells buildings=1 occupied=1 bounds=col=-12..11,row=-12..11 | B b1 roadblock anchor=0,3 hp=5000/5000 state=completed left=0 paused=0 dir=0
+--- 摆上一个坦克之后 @tick=0 ---
+tick=0 seconds=0.00 phase=Deploying outcome=Running ours=1/1 theirs=1/1 | u p01 side=Player kind=Rider hp=150/150 pos=(0,7) cd=0 dealt=0/0 | u e01 side=Enemy kind=Archer hp=90/90 pos=(0,-7) cd=0 dealt=0/0 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=2/15 purse=1980/2250 spent=270 | C r0c2 kind=rider | C r1c1 kind=tank | construction kind=Cells buildings=1 occupied=1 bounds=col=-12..11,row=-12..11 | B b1 roadblock anchor=0,3 hp=5000/5000 state=completed left=0 paused=0 dir=0
+--- 坦克挪到后排之后 @tick=0 ---
+tick=0 seconds=0.00 phase=Deploying outcome=Running ours=1/1 theirs=1/1 | u p01 side=Player kind=Rider hp=150/150 pos=(0,7) cd=0 dealt=0/0 | u e01 side=Enemy kind=Archer hp=90/90 pos=(0,-7) cd=0 dealt=0/0 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=2/15 purse=1980/2250 spent=270 | C r0c2 kind=rider | C r2c4 kind=tank | construction kind=Cells buildings=1 occupied=1 bounds=col=-12..11,row=-12..11 | B b1 roadblock anchor=0,3 hp=5000/5000 state=completed left=0 paused=0 dir=0
+--- 摆子三条都写完 @tick=0 ---
+tick=0 seconds=0.00 phase=Deploying outcome=Running ours=1/1 theirs=1/1 | u p01 side=Player kind=Rider hp=150/150 pos=(0,7) cd=0 dealt=0/0 | u e01 side=Enemy kind=Archer hp=90/90 pos=(0,-7) cd=0 dealt=0/0 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=1/15 purse=2100/2250 spent=150 | C r0c2 kind=rider | construction kind=Cells buildings=1 occupied=1 bounds=col=-12..11,row=-12..11 | B b1 roadblock anchor=0,3 hp=5000/5000 state=completed left=0 paused=0 dir=0
+--- 开打之后阵面不动 @tick=900 ---
+tick=900 seconds=90.00 phase=Settled outcome=PlayerVictory ours=1/1 theirs=0/1 | u p01 side=Player kind=Rider hp=60/150 pos=(-0.007575467,-2.5997431) cd=11 dealt=90/4 | u e01 side=Enemy kind=Archer hp=0/90 pos=(-0.0058109453,-5.740096) cd=6 dealt=90/5 | entity count=2 issued=2 | p01 seq=1 kind=unit | e01 seq=2 kind=unit | board kind=deploy cells=1/15 purse=2100/2250 spent=150 | C r0c2 kind=rider | construction kind=Cells buildings=1 occupied=1 bounds=col=-12..11,row=-12..11 | B b1 roadblock anchor=0,3 hp=5000/5000 state=completed left=0 paused=0 dir=0

@@ -1,0 +1,23 @@
+[
+  { "label": "根视口是 1920×1080（无头默认 64×64，不设的话控件坐标全错）", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "开局：标题屏那颗没有名字，按唯一可见文字点「开始游戏」", "click": "开始游戏" },
+  { "label": "推进 10 个逻辑步（不等墙钟）", "wait": 10 },
+  { "label": "喂食：扣 50 份食物换 10 点饱食度", "inject": "Feed|50" },
+  { "label": "饱食度从 80 涨到 90（快照头部那一格）", "assert": "hunger=90" },
+  { "label": "累计喂食进了巨兽段那一格", "assert": "fed=50/1000" },
+  { "label": "切形态：切到当前形态（幂等成功，这一发也进 Journal）", "inject": "SwitchForm|original" },
+  { "label": "巨兽段那一格写着当前形态", "assert": "form=original" },
+  { "label": "两发都成了", "assert": "last_inject=ok" },
+  { "label": "命令栏「停靠」：开出目的地弹层", "click": "Dock" },
+  { "label": "选「贫城」——这一按就是 Dock 动词", "click": "Destination0" },
+  { "label": "等它从野地开到贫城并靠上（40 米 = 1000 步，留余量）", "wait": 1200 },
+  { "label": "真的停住了", "assert": "phase=poor_city" },
+  { "label": "命令栏「拔锚」：这一按就走 PullAnchor 那一发", "click": "PullAnchor" },
+  { "label": "拔锚之后防守开起来了", "assert": "battle=defence" },
+  { "label": "等这一场防守打完（2 游戏小时 = 7200 步）", "wait": 7500 },
+  { "label": "防守打死的人留下尸体：甲板上那具（或已搬进教堂名册）", "assert": "corpse1" },
+  { "label": "教堂救人那一发：花 10 魂石把 corpse1 救回来（教堂在册表与场上尸体两处来路）", "inject": "ReviveCorpse|corpse1" },
+  { "label": "救回来那一发也成了", "assert": "last_inject=ok" },
+  { "label": "手动开船：右键点地图空地那一发（两段是世界米）", "inject": "SailTo|210|290" },
+  { "label": "手动目标点写进快照头部那一格", "assert": "manual=210.0,290.0" }
+]

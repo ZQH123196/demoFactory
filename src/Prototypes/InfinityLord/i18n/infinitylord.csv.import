@@ -1,0 +1,16 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://deoh1ks7sotu5"
+
+[deps]
+
+source_file="res://src/Prototypes/InfinityLord/i18n/infinitylord.csv"
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,55 @@
+<!--
+  新原型测试项目模板 —— 复制整个 Tests/ 目录，改标 ★ 的四处即可（不必再照抄无限领主那份）。
+  运行：dotnet test src/Prototypes/<原型名>/Tests
+  结构与边界的完整理由见本目录 README.md 与 InfinityLord/Tests/README.md。
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <!-- xUnit v3 的测试工程是独立可执行程序集（v2 是库，运行器另起进程加载）。
+         不设这行会编成库，跑起来报「找不到入口点」。 -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <!-- 断言库（配在 xUnit 上面，不替代它）：xUnit 内置 Assert 只有 True/False 带消息参数，
+         Equal / Contains / Null / InRange 这些都没有（实测 v3.2.2）。本项目的断言普遍带一句
+         中文判红理由，判红时是给 agent 指路的那条信息，丢不得（AGENTS.md 0.1 可调试性第一），
+         所以配 Shouldly：x.ShouldBe(y, "说明") 一对一顶回 NUnit 的 Assert.That(x, Is.EqualTo(y), "说明")。
+         许可 Apache-2.0，免费商用 —— FluentAssertions 8 起转商业授权（~US$129.95/人/年），本项目不用。 -->
+    <PackageReference Include="Shouldly" Version="4.3.0" />
+  </ItemGroup>
+
+  <!--
+    源码链接编译（不引用主 csproj）：主项目是 Godot.NET.Sdk，会把 GodotSharp/引擎引用拖进
+    测试进程；而 Logic + GugaFramework 是纯 C#（引擎无关），直接链接源码即可确定性测试。
+    下面那条 Exclude 点名排除 20 处吃引擎的表现层件，逐条理由见 README.md「排除面就是边界」。
+    要点：排除面写精确到文件，别用通配符顺手挡掉同目录的纯 C# 件
+    （同目录的 BridgeArgs.cs 链得进来、也就断得了）；三个试验场的场子脚本也在排除里，
+    因为它们要在引擎里真跑得起来才验得出遮挡。2026-10-13 核过：
+    GugaFramework 下带 using Godot; 的文件正好 20 处，与这 20 项一一对应。
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\..\GugaFramework\**\*.cs"
+             Exclude="..\..\..\GugaFramework\Camera\**\*.cs;..\..\..\GugaFramework\Animation\**\*.cs;..\..\..\GugaFramework\I18n\**\*.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeHost.cs;..\..\..\GugaFramework\DebugBridge\DebugBridgeEval.cs;..\..\..\GugaFramework\DebugBridge\DebugConsole.cs;..\..\..\GugaFramework\DebugBridge\ViewportCapture.cs;..\..\..\GugaFramework\DebugBridge\InputInjector.cs;..\..\..\GugaFramework\beehave\**\*.cs;..\..\..\GugaFramework\Guard\LogRateWatchdog.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageScene.cs;..\..\..\GugaFramework\Abilities\Stage\SkillStageOpenFieldScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageScene.cs;..\..\..\GugaFramework\Pathfinding\Stage\NavStageUnitView.cs;..\..\..\GugaFramework\FrontEnd\FrontEndLayer.cs;..\..\..\GugaFramework\FrontEnd\FrontEndVerbs.cs;..\..\..\GugaFramework\FrontEnd\Stage\FrontEndStageScene.cs;..\..\..\GugaFramework\Vfx\VfxPlayer.cs;..\..\..\GugaFramework\Vfx\SkillStageVfxCues.cs;..\..\..\GugaFramework\Tests\**\*.cs"
+             LinkBase="GugaFramework" />
+    <!-- ★ 原型纯数据逻辑层（约定就在 Scripts/Logic/ 一层；「逻辑层纯 C#」要求逻辑层尽可能少依赖 Godot 类型） -->
+    <Compile Include="..\Scripts\Logic\*.cs" LinkBase="Logic" />
+    <!-- ★ 行为树/单位 AI 里的纯 C# 决策类（有单位 AI 才需要；无 AI 的原型删掉本行）
+         现例：..\AI\HeroBrainPolicy.cs  LinkBase="AI" -->
+    <!-- ★ 本目录内的测试文件不用写 Include：SDK 默认通配已收（写了会撞重复项） -->
+      <!-- 公共层的两个测试 helper（在 GugaFramework/Tests/，被上面那条通配排除了，所以单点链进来）：
+         TestPaths = 仓库根定位（顶掉 NUnit 的 TestContext.CurrentContext.TestDirectory，xUnit v3 的 TestContext 没这个成员）
+         TestLog  = 运行期输出（顶掉 TestContext.Out/Progress.WriteLine）
+         两份都在公共层只此一份（规则 9.12），各原型只调不重写。 -->
+    <Compile Include="..\..\..\GugaFramework\Tests\TestPaths.cs" LinkBase="GugaFrameworkTests" />
+    <Compile Include="..\..\..\GugaFramework\Tests\TestLog.cs" LinkBase="GugaFrameworkTests" /></ItemGroup>
+
+</Project>

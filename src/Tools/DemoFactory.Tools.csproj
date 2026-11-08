@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <!--
+    原型侧薄 spec（契约与造型内容）物理上放在各原型 Tools/ 目录，源码链接进来编译；
+    通用引擎层（Tscn/TscnCheck/PreviewStage）一行都不复制。
+    通配按「原型」这一层写：新原型只要在 Tools/ 下放一个实现 IPrototypeTools 的类，
+    这里与 src/Tools/Program.cs 都不用改（怎么算合格见 IPrototypeTools.cs 头注）。
+    离线重放取证线：再链接 Logic/*.cs（纯 C# 零 Godot 类型）+
+    GugaFramework（Replay 通用层同在这棵树）——与测试项目同一引用面模式，
+    不引用主 csproj（Godot.NET.Sdk 会把 GodotSharp 拖进工具进程）。
+    Logic 那一行按原型显式写：取证线要的是「该原型的逻辑层能脱离引擎跑」，
+    没验证过的原型不该被通配符顺手拖进来把整座工具搞红。
+  -->
+  <ItemGroup>
+    <Compile Include="..\Prototypes\*\Tools\*.cs" LinkBase="Prototypes" />
+    <Compile Include="..\Prototypes\InfinityLord\Scripts\Logic\*.cs" LinkBase="Logic" />
+    <!-- 另一份原型逻辑层（接了离线重放取证线的原型各自一行：它那份装配与技能层宿主都要链进来）。
+         与上一行同口径按原型显式写，不通配。 -->
+    <Compile Include="..\Prototypes\BattleArray\Scripts\Logic\*.cs" LinkBase="LogicBattleArray" />
+    <!-- 第三份：巨兽竞技场。可玩 MVP 的验收要「同一轮 Journal 重放三层」，重放端是纯 C#，
+         所以它那份装配（ArenaSetup.Hooks / ArenaConfig.Default）必须能脱离引擎跑 —— 实测 Logic/ 下
+         31 个文件零 Godot 引用，与前两份同口径、显式写一行，不通配。 -->
+    <Compile Include="..\Prototypes\BeastArena\Scripts\Logic\*.cs" LinkBase="LogicBeastArena" />
+    <!-- 技能体检单（P5）要读那 16 条技能的**真表**：H2 单挑场的注册壳住在 Tests/ 里，
+         而报告上的每个数字都必须从表里取 —— 工具自己抄一份就成了第二个真值（与 N-24 那两条表各自漂同族）。
+         所以这里按文件显式链那两个纯 C# 件（零 NUnit、零 Godot 类型，与上面 Logic 那行同一口径、不通配 Tests 整目录）。 -->
+    <Compile Include="..\Prototypes\BattleArray\Tests\SkillDuelRift.cs" LinkBase="LogicBattleArrayH2" />
+    <Compile Include="..\Prototypes\BattleArray\Tests\SkillTestWorld.cs" LinkBase="LogicBattleArrayH2" />
+    <!-- GugaFramework 通用层（纯 C#）——与测试项目同一排除面：
+         Camera/Animation/Guard 是表现层组件（Node/Node3D/TcpListener），链进来直接编译失败。
+         DebugBridge 按文件点名那三件（宿主吃 TcpListener、求值器吃 Roslyn、Attach 吃 Node），
+         同目录 BridgeArgs.cs 是纯 C# 取参口径，与测试项目一样链得进来。
+         beehave/ 整棵也要排除：它是 GDScript 运行时 + 依赖 GodotSharp 的任务基类（BeehaveTask.cs），
+         而工具进程按上面的口径刻意不引 GodotSharp —— 2026-09-25 该文件挪进包里之后，
+         少这一条排除就让 dotnet build src/Tools 编不过（工程此前一直是「碰巧没重建」）。
+
+         这份排除是**逐文件点名**的，因此在 GugaFramework/ 下新增一个吃 Godot 类型的文件时，
+         忘了在这里列一行就会让 dotnet build src/Tools 报 CS0246「找不到命名空间 Godot」——
+         症状离病根很远（主工程照编、只有工具线红），排查时要先想到这一条。
+         2026-09-30 收编 ViewportCapture（视口截图）时踩过。
+         2026-10-03 寻路工单 07 收编寻路试验场场景壳时又踩了一次：那次只补了五处**测试**工程，
+         工具这一处漏了，于是根目录 dotnet build（只编主 Godot 工程）与五条测试线全绿、
+         只有 dotnet build src/Tools 报红。判据是「视图层吃 Godot 类型的六处都得排除」，
+         不是「五处」。 -->
+    <Compile Include="..\GugaFramework\**\*.cs"
+             Exclude="..\GugaFramework\Camera\**\*.cs;..\GugaFramework\Animation\**\*.cs;..\GugaFramework\I18n\**\*.cs;..\GugaFramework\DebugBridge\DebugBridgeHost.cs;..\GugaFramework\DebugBridge\DebugBridgeEval.cs;..\GugaFramework\DebugBridge\DebugConsole.cs;..\GugaFramework\DebugBridge\ViewportCapture.cs;..\GugaFramework\DebugBridge\InputInjector.cs;..\GugaFramework\Guard\LogRateWatchdog.cs;..\GugaFramework\beehave\**\*.cs;..\GugaFramework\Abilities\Stage\SkillStageScene.cs;..\GugaFramework\Abilities\Stage\SkillStageOpenFieldScene.cs;..\GugaFramework\Pathfinding\Stage\NavStageScene.cs;..\GugaFramework\Pathfinding\Stage\NavStageUnitView.cs;..\GugaFramework\FrontEnd\FrontEndLayer.cs;..\GugaFramework\FrontEnd\FrontEndVerbs.cs;..\GugaFramework\FrontEnd\Stage\FrontEndStageScene.cs;..\GugaFramework\Vfx\VfxPlayer.cs;..\GugaFramework\Vfx\SkillStageVfxCues.cs;..\GugaFramework\Tests\**\*.cs"
+             LinkBase="GugaFramework" />
+  </ItemGroup>
+
+</Project>

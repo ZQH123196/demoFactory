@@ -1,0 +1,18 @@
+[
+  { "label": "根视口是 1920×1080（无头默认 64×64，不设的话控件坐标全错）", "assertUi": "viewport=(1920, 1080)" },
+  { "label": "开局：标题屏那颗没有名字，按唯一可见文字点「开始游戏」", "click": "开始游戏" },
+  { "label": "推进 10 个逻辑步（不等墙钟）", "wait": 10 },
+  { "label": "命令栏「停靠」：开出目的地弹层", "click": "Dock" },
+  { "label": "选「贫城」——这一按就是 Dock 动词", "click": "Destination0" },
+  { "label": "等它从野地开到贫城并靠上（40 米 = 1000 步，留余量）", "wait": 1200 },
+  { "label": "真的停住了：快照头部那一格写着贫城", "assert": "phase=poor_city" },
+  { "label": "命令栏「经营」：开经营弹层", "click": "Operations" },
+  { "label": "切到「账本与工资」那一栏（非当前栏的控件不可见，先切栏才点得动）", "eval": "var f = Main.GetType().GetField(\"_operations\", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance); var op = (DemoFactory.Prototypes.BeastArena.Ui.OperationsPanel)f!.GetValue(Main)!; op.Tabs.CurrentTab = 1; return \"tab=\" + op.Tabs.CurrentTab;" },
+  { "label": "等账本那一栏刷新出读数", "wait": 1 },
+  { "label": "定价那一发：酒店 1.5、饭店 1、门票 1", "inject": "SetPricing|1.5|1|1" },
+  { "label": "策略那一发：不自动还债", "inject": "SetDebtPolicy|None|-" },
+  { "label": "发薪那一发：把今天应发的工钱一次结清", "inject": "PayWages" },
+  { "label": "发薪之后应发归零（快照头部那一格）", "assert": "wages_due=0" },
+  { "label": "欠薪天数还是 0（这一局没欠过）", "assert": "arrears_days=0" },
+  { "label": "三发都成了", "assert": "last_inject=ok" }
+]

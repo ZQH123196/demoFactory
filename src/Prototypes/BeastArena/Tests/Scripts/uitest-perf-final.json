@@ -1,0 +1,358 @@
+[
+  {
+    "eval": "Main.StartNewRun(7); return \"started\";",
+    "label": "固定种子开局"
+  },
+  {
+    "inject": "Dock|poor_city",
+    "label": "停靠贫城"
+  },
+  {
+    "wait": 976,
+    "label": "航程走完"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.InAirshipWindow) break; Main.AdvanceToDebug(w.Tick+25);} return \"window=\"+w.InAirshipWindow;",
+    "label": "等空艇窗口"
+  },
+  {
+    "inject": "TradeAirship|0|10|0",
+    "label": "贫城成交 10 件"
+  },
+  {
+    "inject": "PlaceBuilding|AirshipDock|-11|-11",
+    "label": "搭空艇码头"
+  },
+  {
+    "inject": "Recruit|TownOrCountry",
+    "label": "招募 1"
+  },
+  {
+    "inject": "Recruit|TownOrCountry",
+    "label": "招募 2"
+  },
+  {
+    "inject": "Recruit|TownOrCountry",
+    "label": "招募 3"
+  },
+  {
+    "inject": "SetPricing|1|1|2",
+    "label": "定价"
+  },
+  {
+    "inject": "PayWages",
+    "label": "发薪"
+  },
+  {
+    "inject": "StartMatch|g1,g3|g2",
+    "label": "办赛"
+  },
+  {
+    "wait": 904,
+    "label": "等办赛收场"
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 1"
+  },
+  {
+    "wait": 1
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 2"
+  },
+  {
+    "wait": 1
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 3"
+  },
+  {
+    "wait": 1118
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 4"
+  },
+  {
+    "wait": 1800
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 5"
+  },
+  {
+    "wait": 1200
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 6"
+  },
+  {
+    "wait": 1800
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 7"
+  },
+  {
+    "wait": 1200
+  },
+  {
+    "inject": "Feed|50",
+    "label": "喂食 8"
+  },
+  {
+    "wait": 5460
+  },
+  {
+    "inject": "ExcavateSoil|0|1",
+    "label": "挖开 0 号象限第 1 层"
+  },
+  {
+    "wait": 600
+  },
+  {
+    "inject": "ExcavateSoil|0|2",
+    "label": "挖开 0 号象限第 2 层"
+  },
+  {
+    "wait": 600
+  },
+  {
+    "inject": "AssignPost|w1|soil:0_2",
+    "label": "派工 1"
+  },
+  {
+    "inject": "AssignPost|w2|soil:0_2",
+    "label": "派工 2"
+  },
+  {
+    "inject": "AssignPost|w3|soil:0_2",
+    "label": "派工 3"
+  },
+  {
+    "inject": "AssignPost|w6|church",
+    "label": "派工 4"
+  },
+  {
+    "inject": "ClearCave|0|2",
+    "label": "清剿洞穴"
+  },
+  {
+    "wait": 120
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(w.Battle.Occasion.ToString()==\"None\") break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" battle=\"+w.Battle.Occasion;",
+    "label": "等清剿收场"
+  },
+  {
+    "inject": "PullAnchor",
+    "label": "拔锚（贫城防守）"
+  },
+  {
+    "wait": 60
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(!w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" defence=\"+w.Battle.IsDefence;",
+    "label": "等贫城防守收场"
+  },
+  {
+    "inject": "Dock|desert_city",
+    "label": "停靠沙城"
+  },
+  {
+    "eval": "var w=Main.World!; double px=0,pz=0; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_1\"){px=x.Position.X;pz=x.Position.Z;}} for(int i=0;i<2500;i++){ var p=w.Voyage.Position; if(System.Math.Sqrt((p.X-px)*(p.X-px)+(p.Z-pz)*(p.Z-pz))<9.9) break; Main.AdvanceToDebug(w.Tick+1);} var q=w.Voyage.Position; return \"tick=\"+w.Tick+\" d=\"+System.Math.Sqrt((q.X-px)*(q.X-px)+(q.Z-pz)*(q.Z-pz)).ToString(\"0.00\");",
+    "label": "驶向第一处矿点"
+  },
+  {
+    "inject": "EatTarget|ore_poor_1",
+    "label": "吞第一处矿"
+  },
+  {
+    "eval": "var w=Main.World!; double px=0,pz=0; foreach(var x in w.Ecology.Nodes){ if(x.Id==\"ore_poor_2\"){px=x.Position.X;pz=x.Position.Z;}} for(int i=0;i<2500;i++){ var p=w.Voyage.Position; if(System.Math.Sqrt((p.X-px)*(p.X-px)+(p.Z-pz)*(p.Z-pz))<9.9) break; Main.AdvanceToDebug(w.Tick+1);} var q=w.Voyage.Position; return \"tick=\"+w.Tick+\" d=\"+System.Math.Sqrt((q.X-px)*(q.X-px)+(q.Z-pz)*(q.Z-pz)).ToString(\"0.00\");",
+    "label": "驶向第二处矿点"
+  },
+  {
+    "inject": "EatTarget|ore_poor_2",
+    "label": "吞第二处矿"
+  },
+  {
+    "wait": 50
+  },
+  {
+    "inject": "SwitchForm|glutton",
+    "label": "切暴食态"
+  },
+  {
+    "wait": 3
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<500;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "等驶抵沙城"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.InAirshipWindow) break; Main.AdvanceToDebug(w.Tick+25);} return \"window=\"+w.InAirshipWindow;",
+    "label": "等空艇窗口"
+  },
+  {
+    "inject": "TradeAirship|0|12|0",
+    "label": "沙城成交 12 件"
+  },
+  {
+    "inject": "EmbedCrystal|0|2",
+    "label": "嵌入魔晶"
+  },
+  {
+    "inject": "StartMatch|g1,g3|g2",
+    "label": "沙城办赛"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.Battle.Occasion.ToString()==\"None\") break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" battle=\"+w.Battle.Occasion;",
+    "label": "等沙城办赛收场"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(w.Town.SpecialMaterial>=10) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" mat=\"+w.Town.SpecialMaterial;",
+    "label": "等特殊材料够 10"
+  },
+  {
+    "inject": "AdvanceTier",
+    "label": "进阶二阶"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<100;i++){ if(!w.InRitual) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" ritual=\"+w.InRitual;",
+    "label": "等进阶仪式落地"
+  },
+  {
+    "wait": 3
+  },
+  {
+    "eval": "var w=Main.World!; if(w.Tick<22200) Main.AdvanceToDebug(22200); return \"tick=\"+w.Tick;",
+    "label": "推进到 22200"
+  },
+  {
+    "inject": "PullAnchor",
+    "label": "拔锚（沙城防守）"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(!w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+10);} return \"tick=\"+w.Tick+\" defence=\"+w.Battle.IsDefence;",
+    "label": "等沙城防守收场"
+  },
+  {
+    "inject": "Dock|rich_city",
+    "label": "停靠富城"
+  },
+  {
+    "wait": 5
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<500;i++){ if(w.IsDocked) break; Main.AdvanceToDebug(w.Tick+25);} return \"tick=\"+w.Tick+\" docked=\"+w.IsDocked;",
+    "label": "等驶抵富城"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<200;i++){ if(w.Town.Ore>=24) break; Main.AdvanceToDebug(w.Tick+5);} return \"tick=\"+w.Tick+\" ore=\"+w.Town.Ore;",
+    "label": "等矿石攒够 24"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<400;i++){ if(w.InAirshipWindow) break; Main.AdvanceToDebug(w.Tick+25);} return \"window=\"+w.InAirshipWindow;",
+    "label": "等空艇窗口"
+  },
+  {
+    "inject": "TradeAirship|0|24|0",
+    "label": "富城成交 24 件"
+  },
+  {
+    "inject": "RemoveBuilding|restaurant",
+    "label": "拆饭馆"
+  },
+  {
+    "inject": "PlaceBuilding|TeleportArray|-11|-7",
+    "label": "搭传送阵"
+  },
+  {
+    "inject": "PayWages",
+    "label": "发薪"
+  },
+  {
+    "inject": "Feed|60",
+    "label": "喂食"
+  },
+  {
+    "eval": "var w=Main.World!; int n=0; while(w.Units.Count(u=>(u.Role==DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Worker||u.Role==DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Gladiator||u.Role==DemoFactory.Prototypes.BeastArena.Logic.UnitRole.FreePerson||u.Role==DemoFactory.Prototypes.BeastArena.Logic.UnitRole.Helper) && u.State!=DemoFactory.Prototypes.BeastArena.Logic.UnitState.Dead && !u.LeftTown)<50){ w.Roster.Add(\"perf_final_\"+(n++), DemoFactory.Prototypes.BeastArena.Logic.UnitRole.FreePerson); } return \"town=\"+n+\" added\";",
+    "label": "镇民补到 50"
+  },
+  {
+    "sleep": 12,
+    "label": "让补进来的人绑定上屏"
+  },
+  {
+    "inject": "PullAnchor",
+    "label": "拔锚 —— 最终防守"
+  },
+  {
+    "eval": "var w=Main.World!; for(int i=0;i<800;i++){ if(w.Battle.IsDefence) break; Main.AdvanceToDebug(w.Tick+5);} return \"tick=\"+w.Tick+\" defence=\"+w.Battle.IsDefence+\" battle=\"+w.Battle.Occasion;",
+    "label": "等最终防守开打"
+  },
+  {
+    "assert": "battle=finaldefence",
+    "label": "确认进了最终防守"
+  },
+  {
+    "sleep": 8,
+    "label": "等敌人上屏"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "最终防守人数读数（应 units=74 enemies=24）"
+  },
+  {
+    "eval": "return Main.SetSpeed(1);",
+    "label": "1 倍速"
+  },
+  {
+    "eval": "return Main.ResetPerf();",
+    "label": "清采样窗（最终防守）"
+  },
+  {
+    "sleep": 20,
+    "label": "最终防守采样 20 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "最终防守读数（含粒子峰值）"
+  },
+  {
+    "eval": "return Main.StressDoubleVfxPeak();",
+    "label": "按两倍峰值挂持续发射器"
+  },
+  {
+    "eval": "return Main.ResetPerf();",
+    "label": "清采样窗（两倍粒子压力）"
+  },
+  {
+    "sleep": 2,
+    "label": "等发射器上屏（不计入采样窗）"
+  },
+  {
+    "eval": "return Main.ResetPerf();",
+    "label": "清采样窗（压测正式窗）"
+  },
+  {
+    "sleep": 20,
+    "label": "两倍粒子峰值压力采样 20 秒"
+  },
+  {
+    "read": "return Main.PerfReadout();",
+    "label": "两倍粒子压力读数（peak 应约两倍）"
+  },
+  {
+    "eval": "return Main.ClearVfxStress();",
+    "label": "撤掉压力发射器"
+  },
+  {
+    "read": "return Main.WorldReadout();",
+    "label": "世界读数"
+  }
+]

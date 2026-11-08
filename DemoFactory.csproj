@@ -1,0 +1,38 @@
+<Project Sdk="Godot.NET.Sdk/4.7.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- DebugBridge eval 动态层（计划 Phase 1）：Roslyn C# Scripting 进程内求值。
+         用户确认：动态求值不可割舍，不设砍档、不做开销测量（可观测性第一）。
+         开发期调试通道：默认关、不出货，体积/首编译开销不作议题。 -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.11.0" />
+  </ItemGroup>
+  <!--
+    测试项目源码不进主程序集：Tests 用 xUnit v3 + Shouldly 且源码链接 GugaFramework/Logic（独立编译），
+    Godot.NET.Sdk 的默认通配会把它拖进来导致 xunit/Shouldly 引用缺失 — 显式排除（保持 None 可见）。
+  -->
+  <ItemGroup>
+    <Compile Remove="src\Prototypes\*\Tests\**\*.cs" />
+    <Compile Remove="src\GugaFramework\Tests\**\*.cs" />
+    <None Include="src\Prototypes\*\Tests\**\*.cs" Exclude="src\Prototypes\*\Tests\bin\**;src\Prototypes\*\Tests\obj\**" />
+    <None Include="src\GugaFramework\Tests\**\*.cs" Exclude="src\GugaFramework\Tests\bin\**;src\GugaFramework\Tests\obj\**" />
+  </ItemGroup>
+  <!-- 开发期工具不进游戏程序集（分法是「产物进不进最终包」，AGENTS.md 0.3 节）：
+       src/Tools 是独立工具项目（自带头行 Main，dotnet run 调用）；
+       原型 Tools/ 下的薄 spec（Gen.cs 等）由 src/Tools 源码链接编译。
+       Godot.NET.Sdk 的通配会把它们拖进游戏程序集（与 Tests 同一坑），显式排除。
+       通配符按「原型」这一层写，不写死原型名 —— 新原型生下来就在排除面里。 -->
+  <ItemGroup>
+    <Compile Remove="src\Tools\**\*.cs" />
+    <Compile Remove="src\Prototypes\*\Tools\**\*.cs" />
+    <None Include="src\Prototypes\*\Tools\**\*.cs" />
+  </ItemGroup>
+  <!-- docs/research/ 下的研究性探针各自成项目编译（产物进 .cache/），不进游戏程序集：
+       它们可能故意编不过（用来判定能力边界），绝不能把主程序集一起搞红。 -->
+  <ItemGroup>
+    <Compile Remove="docs\research\**\*.cs" />
+  </ItemGroup>
+</Project>
